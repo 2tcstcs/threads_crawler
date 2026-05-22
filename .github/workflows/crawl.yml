@@ -51,8 +51,8 @@ jobs:
             echo "Changes detected in data files. Committing..."
             git add data.json data.js
             git commit -m "chore: auto-update crawled Threads data [skip ci]"
-            # Pull remote commits to prevent race conditions during long-running scrapes
-            git pull --rebase origin main
+            # Pull remote commits and automatically resolve conflicts in favor of newly crawled data
+            git pull --rebase -X theirs origin main
             git push origin main
           else
             echo "No changes in crawled data. Skipping commit."
