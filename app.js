@@ -23,7 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. Set Up UI Event Listeners
   setupEventListeners();
 
-  // 4. Initial Render & Filter
+  // 4. Initialize Settings Modal
+  initSettings();
+
+  // 5. Initial Render & Filter
   updateDashboard();
 });
 
@@ -835,4 +838,210 @@ function debounce(func, wait) {
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
+}
+
+/**
+ * Initialize Settings Modal & Keyword Generator
+ */
+let currentConfig = { themes: {}, scrolls: 2 };
+
+function initSettings() {
+  const settingsBtn = document.getElementById('settings-btn');
+  const settingsModal = document.getElementById('settings-modal');
+  const closeBtn = document.getElementById('settings-close-btn');
+  const saveCloseBtn = document.getElementById('settings-save-close-btn');
+  const addRowBtn = document.getElementById('add-theme-row-btn');
+  const copyBtn = document.getElementById('copy-json-btn');
+  
+  if (!settingsBtn || !settingsModal) return;
+
+  // Open modal
+  settingsBtn.addEventListener('click', () => {
+    settingsModal.classList.remove('hidden');
+    loadConfigFromSource();
+  });
+
+  // Close modal
+  const closeModal = () => {
+    settingsModal.classList.add('hidden');
+  };
+  closeBtn.addEventListener('click', closeModal);
+  saveCloseBtn.addEventListener('click', closeModal);
+
+  // Close modal when clicking outside content
+  settingsModal.addEventListener('click', (e) => {
+    if (e.target === settingsModal) {
+      closeModal();
+    }
+  });
+
+  // Add theme row
+  addRowBtn.addEventListener('click', () => {
+    addThemeRow('', '');
+  });
+
+  // Copy JSON content
+  copyBtn.addEventListener('click', () => {
+    const codeBlock = document.getElementById('json-preview-code');
+    if (!codeBlock) return;
+    
+    navigator.clipboard.writeText(codeBlock.textContent)
+      .then(() => {
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> 已複製！';
+        copyBtn.style.backgroundColor = '#1e8e3e';
+        copyBtn.style.color = '#ffffff';
+        copyBtn.style.borderColor = '#1e8e3e';
+        
+        setTimeout(() => {
+          copyBtn.innerHTML = originalText;
+          copyBtn.style.backgroundColor = '';
+          copyBtn.style.color = '';
+          copyBtn.style.borderColor = '';
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('複製失敗，請手動選取複製');
+      });
+  });
+}
+
+/**
+ * Load settings config from config.json if served, else fallback to unique themes
+ */
+function loadConfigFromSource() {
+  fetch('config.json')
+    .then(response => {
+      if (!response.ok) throw new Error('Network response not ok');
+      return response.json();
+    })
+    .then(data => {
+      if (data && data.themes) {
+        currentConfig.scrolls = data.scrolls || 2;
+        if (typeof data.themes === 'object' && !Array.isArray(data.themes)) {
+          currentConfig.themes = data.themes;
+        } else if (Array.isArray(data.themes)) {
+          currentConfig.themes = {};
+          data.themes.forEach(t => {
+            if (typeof t === 'string') {
+              currentConfig.themes[t] = t;
+            } else if (typeof t === 'object' && t.name && t.query) {
+              currentConfig.themes[t.name] = t.query;
+            }
+          });
+        }
+      }
+      renderThemeEditor();
+    })
+    .catch(err => {
+      console.warn('Could not fetch config.json directly (might be running offline or local file). Building configuration from crawled data.', err);
+      // Fallback: extract from posts
+      const uniqueThemes = getUniqueThemes();
+      currentConfig.themes = {};
+      uniqueThemes.forEach(t => {
+        currentConfig.themes[t] = t;
+      });
+      renderThemeEditor();
+    });
+}
+
+/**
+ * Render all rows in the editor based on currentConfig.themes
+ */
+function renderThemeEditor() {
+  const container = document.getElementById('theme-editor-rows');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  const themeEntries = Object.entries(currentConfig.themes);
+  if (themeEntries.length === 0) {
+    // Add one empty row if empty
+    addThemeRow('', '');
+  } else {
+    themeEntries.forEach(([name, query]) => {
+      addThemeRow(name, query);
+    });
+  }
+  
+  updateJsonPreview();
+}
+
+/**
+ * Add a single theme input row to the editor
+ */
+function addThemeRow(name = '', query = '') {
+  const container = document.getElementById('theme-editor-rows');
+  if (!container) return;
+
+  const tr = document.createElement('tr');
+  
+  tr.innerHTML = `
+    <td>
+      <input type="text" class="theme-editor-input theme-name-input" placeholder="主題名稱 (例如: 台股)" value="${escapeHTML(name)}">
+    </td>
+    <td>
+      <input type="text" class="theme-editor-input theme-query-input" placeholder="搜尋關鍵字 (例如: 台股 OR 2330)" value="${escapeHTML(query)}">
+    </td>
+    <td>
+      <button class="delete-row-btn" title="刪除此主題">
+        <i class="fa-solid fa-trash-can"></i>
+      </button>
+    </td>
+  `;
+
+  // Attach dynamic change events
+  const nameInput = tr.querySelector('.theme-name-input');
+  const queryInput = tr.querySelector('.theme-query-input');
+  const deleteBtn = tr.querySelector('.delete-row-btn');
+
+  const onInputChange = () => {
+    rebuildConfigFromInputs();
+  };
+
+  nameInput.addEventListener('input', onInputChange);
+  queryInput.addEventListener('input', onInputChange);
+
+  deleteBtn.addEventListener('click', () => {
+    tr.remove();
+    rebuildConfigFromInputs();
+  });
+
+  container.appendChild(tr);
+  rebuildConfigFromInputs();
+}
+
+/**
+ * Reads values from editor rows and rebuilds currentConfig.themes
+ */
+function rebuildConfigFromInputs() {
+  const rows = document.querySelectorAll('#theme-editor-rows tr');
+  currentConfig.themes = {};
+  
+  rows.forEach(row => {
+    const name = row.querySelector('.theme-name-input')?.value.trim();
+    const query = row.querySelector('.theme-query-input')?.value.trim();
+    
+    if (name) {
+      currentConfig.themes[name] = query || name;
+    }
+  });
+  
+  updateJsonPreview();
+}
+
+/**
+ * Serializes currentConfig into the codeblock
+ */
+function updateJsonPreview() {
+  const codeBlock = document.getElementById('json-preview-code');
+  if (!codeBlock) return;
+  
+  const configOutput = {
+    themes: currentConfig.themes,
+    scrolls: currentConfig.scrolls || 2
+  };
+  
+  codeBlock.textContent = JSON.stringify(configOutput, null, 2);
 }

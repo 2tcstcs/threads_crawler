@@ -79,11 +79,11 @@ def parse_time_str(time_str):
         pass
     return now
 
-async def scrape_theme(page, theme, scrolls=2):
+async def scrape_theme(page, theme_name, theme_query, scrolls=2):
     """
-    Scrapes threads.com/search?q={theme} and returns a list of post dictionaries.
+    Scrapes threads.com/search?q={theme_query} and returns a list of post dictionaries.
     """
-    url = f"https://www.threads.com/search?q={theme}"
+    url = f"https://www.threads.com/search?q={theme_query}"
     print(f"\n[Scraper] Navigating to: {url}")
     
     posts = []
@@ -248,7 +248,7 @@ async def scrape_theme(page, theme, scrolls=2):
                 "replies": item["replies"],
                 "time": post_time,
                 "time_str": item["time_str"],
-                "theme": theme,
+                "theme": theme_name,
                 "last_seen": int(time.time())
             })
             
@@ -258,15 +258,27 @@ async def scrape_theme(page, theme, scrolls=2):
     return posts
 
 def load_config():
-    themes = DEFAULT_THEMES
+    # Default is list of dicts mapping name to query
+    themes = [{"name": t, "query": t} for t in DEFAULT_THEMES]
     scrolls = 2
     if os.path.exists("config.json"):
         try:
             with open("config.json", "r", encoding="utf-8") as f:
                 cfg = json.load(f)
                 if isinstance(cfg, dict):
-                    if "themes" in cfg and isinstance(cfg["themes"], list):
-                        themes = [str(t).strip() for t in cfg["themes"] if str(t).strip()]
+                    if "themes" in cfg:
+                        raw_themes = cfg["themes"]
+                        if isinstance(raw_themes, dict):
+                            themes = [{"name": str(k).strip(), "query": str(v).strip()} for k, v in raw_themes.items() if str(k).strip() and str(v).strip()]
+                        elif isinstance(raw_themes, list):
+                            normalized = []
+                            for item in raw_themes:
+                                if isinstance(item, dict) and "name" in item and "query" in item:
+                                    normalized.append({"name": str(item["name"]).strip(), "query": str(item["query"]).strip()})
+                                elif isinstance(item, str) and item.strip():
+                                    normalized.append({"name": item.strip(), "query": item.strip()})
+                            if normalized:
+                                themes = normalized
                     if "scrolls" in cfg and isinstance(cfg["scrolls"], int):
                         scrolls = cfg["scrolls"]
             print(f"Loaded configuration from config.json: themes={themes}, scrolls={scrolls}")
@@ -322,9 +334,11 @@ async def main_async(args):
         
         # Navigate directly to search pages to avoid setting cookies that trigger the login wall
 
-        for theme in themes:
-            theme_posts = await scrape_theme(page, theme, scrolls=args.scrolls_val)
-            print(f"Successfully scraped {len(theme_posts)} posts for theme: {theme}")
+        for theme_cfg in themes:
+            theme_name = theme_cfg["name"]
+            theme_query = theme_cfg["query"]
+            theme_posts = await scrape_theme(page, theme_name, theme_query, scrolls=args.scrolls_val)
+            print(f"Successfully scraped {len(theme_posts)} posts for theme: {theme_name}")
             
             # Merge with existing posts
             for post in theme_posts:
@@ -394,7 +408,7 @@ def main():
     
     # Override with command line arguments if provided
     if args.themes is not None:
-        args.themes_list = [t.strip() for t in args.themes.split(",") if t.strip()]
+        args.themes_list = [{"name": t.strip(), "query": t.strip()} for t in args.themes.split(",") if t.strip()]
     else:
         args.themes_list = cfg_themes
         
