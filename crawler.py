@@ -257,6 +257,23 @@ async def scrape_theme(page, theme, scrolls=2):
         
     return posts
 
+def load_config():
+    themes = DEFAULT_THEMES
+    scrolls = 2
+    if os.path.exists("config.json"):
+        try:
+            with open("config.json", "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+                if isinstance(cfg, dict):
+                    if "themes" in cfg and isinstance(cfg["themes"], list):
+                        themes = [str(t).strip() for t in cfg["themes"] if str(t).strip()]
+                    if "scrolls" in cfg and isinstance(cfg["scrolls"], int):
+                        scrolls = cfg["scrolls"]
+            print(f"Loaded configuration from config.json: themes={themes}, scrolls={scrolls}")
+        except Exception as e:
+            print(f"[Warning] Failed to read config.json: {e}")
+    return themes, scrolls
+
 async def main_async(args):
     # Load existing database
     existing_posts = {}
@@ -276,7 +293,7 @@ async def main_async(args):
             print(f"Failed to load data.json: {e}")
 
     # Set up themes
-    themes = [t.strip() for t in args.themes.split(",") if t.strip()]
+    themes = args.themes_list
     print(f"Starting crawler for themes: {themes}")
 
     new_posts_count = 0
@@ -306,7 +323,7 @@ async def main_async(args):
         # Navigate directly to search pages to avoid setting cookies that trigger the login wall
 
         for theme in themes:
-            theme_posts = await scrape_theme(page, theme, scrolls=args.scrolls)
+            theme_posts = await scrape_theme(page, theme, scrolls=args.scrolls_val)
             print(f"Successfully scraped {len(theme_posts)} posts for theme: {theme}")
             
             # Merge with existing posts
@@ -367,12 +384,27 @@ async def main_async(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Threads public opinion scraper")
-    parser.add_argument("--scrolls", type=int, default=2, help="Number of times to scroll down to load more posts")
-    parser.add_argument("--themes", type=str, default=",".join(DEFAULT_THEMES), help="Comma-separated list of themes to scrape")
+    parser.add_argument("--scrolls", type=int, default=None, help="Number of times to scroll down to load more posts")
+    parser.add_argument("--themes", type=str, default=None, help="Comma-separated list of themes to scrape")
     parser.add_argument("--init", action="store_true", help="Clear old data and run a clean crawl")
     args = parser.parse_args()
     
+    # Load config file values
+    cfg_themes, cfg_scrolls = load_config()
+    
+    # Override with command line arguments if provided
+    if args.themes is not None:
+        args.themes_list = [t.strip() for t in args.themes.split(",") if t.strip()]
+    else:
+        args.themes_list = cfg_themes
+        
+    if args.scrolls is not None:
+        args.scrolls_val = args.scrolls
+    else:
+        args.scrolls_val = cfg_scrolls
+        
     asyncio.run(main_async(args))
 
 if __name__ == "__main__":
     main()
+

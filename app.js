@@ -2,15 +2,16 @@
 let allPosts = [];
 let themeVolumeChart = null;
 let themeEngagementChart = null;
+let hourlyTrendChart = null;
 
-// CSS HSL colors matching index.css
+// CSS Google-inspired colors matching index.css
 const THEME_COLORS = [
-  'hsl(275, 80%, 60%)', // Theme 0: Purple
-  'hsl(150, 75%, 45%)', // Theme 1: Emerald
-  'hsl(30, 90%, 55%)',  // Theme 2: Orange
-  'hsl(340, 85%, 55%)'  // Theme 3: Rose
+  '#1a73e8', // Theme 0: Google Blue
+  '#1e8e3e', // Theme 1: Google Green
+  '#f9ab00', // Theme 2: Google Yellow
+  '#d93025'  // Theme 3: Google Red
 ];
-const FALLBACK_COLOR = 'hsl(200, 85%, 50%)'; // Blue
+const FALLBACK_COLOR = '#5f6368'; // Google Gray
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Dark/Light Mode
@@ -591,7 +592,7 @@ function updateCharts(filteredPosts) {
 
   const themeBorderColors = uniqueThemes.map(theme => getThemeColor(theme));
   const isDark = document.documentElement.classList.contains('dark');
-  const textColor = isDark ? '#a0a0b0' : '#4a4a5a';
+  const textColor = isDark ? '#9aa0a6' : '#5f6368';
   const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
 
   // 1. Theme Volume Chart (Doughnut)
@@ -612,7 +613,7 @@ function updateCharts(filteredPosts) {
           data: hasData ? volumeData : [1],
           backgroundColor: hasData ? themeBorderColors : ['#e0e0e0'],
           borderWidth: isDark ? 2 : 1,
-          borderColor: isDark ? '#1a1726' : '#ffffff'
+          borderColor: isDark ? '#1f1f1f' : '#ffffff'
         }]
       },
       options: {
@@ -625,7 +626,7 @@ function updateCharts(filteredPosts) {
             labels: {
               color: textColor,
               font: {
-                family: 'Inter',
+                family: 'Roboto',
                 size: 11,
                 weight: '500'
               },
@@ -663,15 +664,15 @@ function updateCharts(filteredPosts) {
           {
             label: '平均按讚數',
             data: avgLikesData,
-            backgroundColor: 'hsl(340, 85%, 55%)',
-            borderRadius: 6,
+            backgroundColor: '#ea4335',
+            borderRadius: 4,
             barThickness: 16
           },
           {
             label: '平均回覆數',
             data: avgRepliesData,
-            backgroundColor: 'hsl(200, 85%, 50%)',
-            borderRadius: 6,
+            backgroundColor: '#1a73e8',
+            borderRadius: 4,
             barThickness: 16
           }
         ]
@@ -685,7 +686,7 @@ function updateCharts(filteredPosts) {
             labels: {
               color: textColor,
               font: {
-                family: 'Inter',
+                family: 'Roboto',
                 size: 11
               },
               boxWidth: 12
@@ -697,21 +698,120 @@ function updateCharts(filteredPosts) {
             grid: { display: false },
             ticks: {
               color: textColor,
-              font: { family: 'Inter', size: 11, weight: '600' }
+              font: { family: 'Roboto', size: 11, weight: '500' }
             }
           },
           y: {
             grid: { color: gridColor },
             ticks: {
               color: textColor,
-              font: { family: 'Inter', size: 10 }
+              font: { family: 'Roboto', size: 10 }
             }
           }
         }
       }
     });
   }
+
+  // 3. Hourly Trend Chart (24-Hour Line Chart)
+  const hourlyCtx = document.getElementById('hourlyTrendChart')?.getContext('2d');
+  if (hourlyCtx) {
+    if (hourlyTrendChart) {
+      hourlyTrendChart.destroy();
+    }
+
+    // Generate labels for the last 24 hours (e.g. 17:00, 18:00...)
+    const labels = [];
+    const now = new Date();
+    for (let i = 23; i >= 0; i--) {
+      const d = new Date(now.getTime() - i * 3600 * 1000);
+      const hoursStr = String(d.getHours()).padStart(2, '0');
+      labels.push(`${hoursStr}:00`);
+    }
+
+    // Aggregate post counts per theme into 1-hour interval bins
+    const nowSec = Math.floor(Date.now() / 1000);
+    const lineDatasets = uniqueThemes.map(theme => {
+      const counts = [];
+      const themeColor = getThemeColor(theme);
+      
+      for (let i = 23; i >= 0; i--) {
+        const binStart = nowSec - (i + 1) * 3600;
+        const binEnd = nowSec - i * 3600;
+        
+        // Count posts published in this hour block for this theme
+        const count = filteredPosts.filter(p => {
+          return p.theme === theme && p.time >= binStart && p.time < binEnd;
+        }).length;
+        
+        counts.push(count);
+      }
+
+      return {
+        label: theme,
+        data: counts,
+        borderColor: themeColor,
+        backgroundColor: themeColor + '10', // 6% opacity fill
+        borderWidth: 2,
+        tension: 0.35, // Smooth curves
+        fill: true,
+        pointBackgroundColor: themeColor,
+        pointBorderColor: isDark ? '#1f1f1f' : '#ffffff',
+        pointBorderWidth: 1.5,
+        pointRadius: 3,
+        pointHoverRadius: 5
+      };
+    });
+
+    hourlyTrendChart = new Chart(hourlyCtx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: lineDatasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false
+        },
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: textColor,
+              font: {
+                family: 'Roboto',
+                size: 11
+              },
+              boxWidth: 12
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: textColor,
+              font: { family: 'Roboto', size: 10 }
+            }
+          },
+          y: {
+            grid: { color: gridColor },
+            ticks: {
+              color: textColor,
+              stepSize: 1,
+              font: { family: 'Roboto', size: 10 }
+            },
+            min: 0
+          }
+        }
+      }
+    });
+  }
 }
+
 
 /**
  * Handle updating chart text colors when toggling dark mode
