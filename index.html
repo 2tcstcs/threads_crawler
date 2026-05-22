@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threads 輿情與關鍵字主題監測儀表板</title>
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header glass">
+      <div class="header-content">
+        <div class="logo-area">
+          <div class="logo-icon"><i class="fa-brands fa-threads"></i></div>
+          <div>
+            <h1>Threads 輿情監測站</h1>
+            <p class="subtitle">每小時自動爬取關鍵字主題之數量與互動分析</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="theme-toggle" class="theme-btn" aria-label="切換主題">
+            <i class="fa-solid fa-moon dark-icon"></i>
+            <i class="fa-solid fa-sun light-icon"></i>
+          </button>
+          <button id="refresh-btn" class="refresh-btn">
+            <i class="fa-solid fa-rotate"></i> 重新整理
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="stat-card" id="stat-total-posts">
+        <div class="stat-icon"><i class="fa-solid fa-paste"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">監測文章總數</span>
+          <span class="stat-value">--</span>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-unique-users">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">活躍帳號數</span>
+          <span class="stat-value">--</span>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-avg-likes">
+        <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">平均按讚數</span>
+          <span class="stat-value">--</span>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-avg-replies">
+        <div class="stat-icon"><i class="fa-solid fa-comment"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">平均回覆數</span>
+          <span class="stat-value">--</span>
+        </div>
+      </div>
+      <div class="stat-card" id="stat-last-update">
+        <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+        <div class="stat-info">
+          <span class="stat-label">最後同步時間</span>
+          <span class="stat-value">--</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visualization Charts Section -->
+    <section class="charts-section">
+      <div class="chart-card glass">
+        <h3><i class="fa-solid fa-chart-pie"></i> 主題文章數量佔比</h3>
+        <div class="chart-container">
+          <canvas id="themeVolumeChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card glass">
+        <h3><i class="fa-solid fa-chart-column"></i> 主題社群互動分析 (讚數/回覆數)</h3>
+        <div class="chart-container">
+          <canvas id="themeEngagementChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Filter Sidebar -->
+      <aside class="filter-sidebar glass">
+        <div class="sidebar-header">
+          <h2><i class="fa-solid fa-sliders"></i> 篩選與分析條件</h2>
+          <button id="reset-filters" class="reset-btn-link">清除條件</button>
+        </div>
+        
+        <!-- Search Keyword -->
+        <div class="filter-group">
+          <label for="filter-search">內文關鍵字搜尋</label>
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="filter-search" placeholder="搜尋內文或作者...">
+          </div>
+        </div>
+
+        <!-- Filter by Theme -->
+        <div class="filter-group">
+          <label>監測主題篩選</label>
+          <div class="theme-checkbox-list" id="theme-selector-list">
+            <!-- Dynamically populated theme badges -->
+          </div>
+        </div>
+
+        <!-- Engagement Filter -->
+        <div class="filter-group">
+          <label>最低按讚門檻</label>
+          <div class="range-inputs">
+            <input type="number" id="filter-likes-min" placeholder="不限" min="0">
+            <span class="range-suffix">讚以上</span>
+          </div>
+        </div>
+
+        <!-- Sort Results -->
+        <div class="filter-group">
+          <label for="filter-sort">文章排序方式</label>
+          <select id="filter-sort">
+            <option value="time-desc">發布時間：最新優先</option>
+            <option value="time-asc">發布時間：最舊優先</option>
+            <option value="likes-desc">按讚數量：由多到少</option>
+            <option value="replies-desc">回覆數量：由多到少</option>
+            <option value="text-len-desc">內文長度：由長到短</option>
+          </select>
+        </div>
+      </aside>
+
+      <!-- Listings Section -->
+      <section class="listings-container">
+        <div class="listings-header">
+          <div class="results-count">
+            目前篩選出 <span id="filtered-count">0</span> 筆 Threads 文章
+          </div>
+          <div class="active-filters-chips" id="active-chips">
+            <!-- Chips will be added dynamically -->
+          </div>
+        </div>
+
+        <div class="listings-grid" id="listings-grid">
+          <!-- Skeleton items display while loading -->
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state hidden" id="empty-state">
+          <div class="empty-icon"><i class="fa-brands fa-threads"></i></div>
+          <h3>找不到符合條件的文章</h3>
+          <p>請嘗試放寬您的篩選範圍或清除搜尋條件。</p>
+          <button id="empty-reset-btn" class="primary-btn">重設所有篩選</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>© 2026 Threads 輿情監測站. 本專案僅供輿情分析與學術交流研究使用，所有資料著作權屬 Meta Threads 所有。</p>
+      <p>最後更新狀態: <span id="sync-time">Just now</span></p>
+    </footer>
+  </div>
+
+  <!-- Load files, data.js is generated by crawler.py containing window.crawledData -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
