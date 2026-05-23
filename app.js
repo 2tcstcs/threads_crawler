@@ -843,7 +843,7 @@ function debounce(func, wait) {
 /**
  * Initialize Settings Modal & Keyword Generator
  */
-let currentConfig = { themes: {}, scrolls: 2 };
+let currentConfig = { themes: {}, scrolls: 2, only_today: false };
 
 function initSettings() {
   const settingsBtn = document.getElementById('settings-btn');
@@ -879,6 +879,15 @@ function initSettings() {
   addRowBtn.addEventListener('click', () => {
     addThemeRow('', '');
   });
+
+  // Handle only_today checkbox toggle
+  const onlyTodayCheckbox = document.getElementById('setting-only-today');
+  if (onlyTodayCheckbox) {
+    onlyTodayCheckbox.addEventListener('change', () => {
+      currentConfig.only_today = onlyTodayCheckbox.checked;
+      updateJsonPreview();
+    });
+  }
 
   // Copy JSON content
   copyBtn.addEventListener('click', () => {
@@ -917,21 +926,31 @@ function loadConfigFromSource() {
       return response.json();
     })
     .then(data => {
-      if (data && data.themes) {
+      if (data) {
         currentConfig.scrolls = data.scrolls || 2;
-        if (typeof data.themes === 'object' && !Array.isArray(data.themes)) {
-          currentConfig.themes = data.themes;
-        } else if (Array.isArray(data.themes)) {
-          currentConfig.themes = {};
-          data.themes.forEach(t => {
-            if (typeof t === 'string') {
-              currentConfig.themes[t] = t;
-            } else if (typeof t === 'object' && t.name && t.query) {
-              currentConfig.themes[t.name] = t.query;
-            }
-          });
+        currentConfig.only_today = data.only_today === true;
+        if (data.themes) {
+          if (typeof data.themes === 'object' && !Array.isArray(data.themes)) {
+            currentConfig.themes = data.themes;
+          } else if (Array.isArray(data.themes)) {
+            currentConfig.themes = {};
+            data.themes.forEach(t => {
+              if (typeof t === 'string') {
+                currentConfig.themes[t] = t;
+              } else if (typeof t === 'object' && t.name && t.query) {
+                currentConfig.themes[t.name] = t.query;
+              }
+            });
+          }
         }
       }
+      
+      // Update checkbox element UI
+      const onlyTodayCheckbox = document.getElementById('setting-only-today');
+      if (onlyTodayCheckbox) {
+        onlyTodayCheckbox.checked = currentConfig.only_today;
+      }
+      
       renderThemeEditor();
     })
     .catch(err => {
@@ -939,9 +958,16 @@ function loadConfigFromSource() {
       // Fallback: extract from posts
       const uniqueThemes = getUniqueThemes();
       currentConfig.themes = {};
+      currentConfig.only_today = false;
       uniqueThemes.forEach(t => {
         currentConfig.themes[t] = t;
       });
+      
+      const onlyTodayCheckbox = document.getElementById('setting-only-today');
+      if (onlyTodayCheckbox) {
+        onlyTodayCheckbox.checked = false;
+      }
+      
       renderThemeEditor();
     });
 }
@@ -1040,7 +1066,8 @@ function updateJsonPreview() {
   
   const configOutput = {
     themes: currentConfig.themes,
-    scrolls: currentConfig.scrolls || 2
+    scrolls: currentConfig.scrolls || 2,
+    only_today: currentConfig.only_today === true
   };
   
   codeBlock.textContent = JSON.stringify(configOutput, null, 2);

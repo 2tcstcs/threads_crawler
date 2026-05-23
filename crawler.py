@@ -1,4 +1,5 @@
 import os
+import datetime
 import sys
 import json
 import time
@@ -261,6 +262,7 @@ def load_config():
     # Default is list of dicts mapping name to query
     themes = [{"name": t, "query": t} for t in DEFAULT_THEMES]
     scrolls = 2
+    only_today = False
     if os.path.exists("config.json"):
         try:
             with open("config.json", "r", encoding="utf-8") as f:
@@ -281,10 +283,12 @@ def load_config():
                                 themes = normalized
                     if "scrolls" in cfg and isinstance(cfg["scrolls"], int):
                         scrolls = cfg["scrolls"]
-            print(f"Loaded configuration from config.json: themes={themes}, scrolls={scrolls}")
+                    if "only_today" in cfg and isinstance(cfg["only_today"], bool):
+                        only_today = cfg["only_today"]
+            print(f"Loaded configuration from config.json: themes={themes}, scrolls={scrolls}, only_today={only_today}")
         except Exception as e:
             print(f"[Warning] Failed to read config.json: {e}")
-    return themes, scrolls
+    return themes, scrolls, only_today
 
 async def main_async(args):
     # Load existing database
@@ -307,6 +311,16 @@ async def main_async(args):
     # Set up themes
     themes = args.themes_list
     print(f"Starting crawler for themes: {themes}")
+
+    # Calculate today's start timestamp in Taipei (UTC+8)
+    only_today = getattr(args, "only_today_val", False)
+    today_start_timestamp = 0
+    if only_today:
+        tz = datetime.timezone(datetime.timedelta(hours=8))
+        now_local = datetime.datetime.now(tz)
+        today_start_local = datetime.datetime(now_local.year, now_local.month, now_local.day, tzinfo=tz)
+        today_start_timestamp = int(today_start_local.timestamp())
+        print(f"[Scraper] Filter enabled: Only keeping posts published today (since {today_start_local}, timestamp: {today_start_timestamp})")
 
     new_posts_count = 0
     updated_posts_count = 0
@@ -342,6 +356,8 @@ async def main_async(args):
             
             # Merge with existing posts
             for post in theme_posts:
+                if only_today and post.get("time", 0) < today_start_timestamp:
+                    continue
                 pid = post["id"]
                 if pid in existing_posts:
                     # Update metrics and last_seen
@@ -401,10 +417,11 @@ def main():
     parser.add_argument("--scrolls", type=int, default=None, help="Number of times to scroll down to load more posts")
     parser.add_argument("--themes", type=str, default=None, help="Comma-separated list of themes to scrape")
     parser.add_argument("--init", action="store_true", help="Clear old data and run a clean crawl")
+    parser.add_argument("--only-today", action="store_true", default=None, help="Only scrape posts published on the current day")
     args = parser.parse_args()
     
     # Load config file values
-    cfg_themes, cfg_scrolls = load_config()
+    cfg_themes, cfg_scrolls, cfg_only_today = load_config()
     
     # Override with command line arguments if provided
     if args.themes is not None:
@@ -416,6 +433,11 @@ def main():
         args.scrolls_val = args.scrolls
     else:
         args.scrolls_val = cfg_scrolls
+        
+    if args.only_today is not None:
+        args.only_today_val = args.only_today
+    else:
+        args.only_today_val = cfg_only_today
         
     asyncio.run(main_async(args))
 
