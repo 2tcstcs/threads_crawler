@@ -1978,7 +1978,11 @@ async function fetchLiveTrends(keyword) {
       if (!feed || !feed.items || !Array.isArray(feed.items)) {
         throw new Error("Invalid JSON Feed structure");
       }
-      
+      const mappedPosts = feed.items.map(item => {
+        const postText = item.summary || item.content_html || item.title || '無內文';
+        const pubDate = item.date_published ? new Date(item.date_published) : new Date();
+        const author = item.authors?.[0] || {};
+        
         let mirrorHost = 'RSS-Hub';
         try {
           mirrorHost = new URL(mirror).hostname;
