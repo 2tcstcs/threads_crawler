@@ -70,6 +70,20 @@
     "first_seen": 1779391417
   },
   {
+    "id": "DYizayPD7MM",
+    "username": "d0000abc",
+    "user_url": "https://www.threads.com/@d0000abc",
+    "text": "3天",
+    "url": "https://www.threads.com/@d0000abc/post/DYizayPD7MM",
+    "likes": 0,
+    "replies": 0,
+    "time": 1779256768,
+    "time_str": "3天",
+    "theme": "銀行",
+    "last_seen": 1779515968,
+    "first_seen": 1779256768
+  },
+  {
     "id": "DYixCv-ErZd",
     "username": "jessie_lai1202",
     "user_url": "https://www.threads.com/@jessie_lai1202",
@@ -94,7 +108,7 @@
     "time": 1779184240,
     "time_str": "3天",
     "theme": "銀行",
-    "last_seen": 1779494333,
+    "last_seen": 1779515968,
     "first_seen": 1779184240
   },
   {
@@ -178,7 +192,7 @@
     "time": 1778198400,
     "time_str": "2026-5-8",
     "theme": "銀行",
-    "last_seen": 1779494333,
+    "last_seen": 1779515968,
     "first_seen": 1778198400
   },
   {
@@ -220,7 +234,7 @@
     "time": 1777766400,
     "time_str": "2026-5-3",
     "theme": "詐騙",
-    "last_seen": 1779459378,
+    "last_seen": 1779515985,
     "first_seen": 1777766400
   },
   {
@@ -262,7 +276,7 @@
     "time": 1777334400,
     "time_str": "2026-4-28",
     "theme": "銀行",
-    "last_seen": 1779494333,
+    "last_seen": 1779515968,
     "first_seen": 1777334400
   },
   {
@@ -402,7 +416,7 @@
     "time": 1774396800,
     "time_str": "2026-3-25",
     "theme": "銀行",
-    "last_seen": 1779469394,
+    "last_seen": 1779515968,
     "first_seen": 1774396800
   },
   {
@@ -500,7 +514,7 @@
     "time": 1766102400,
     "time_str": "2025-12-19",
     "theme": "詐騙",
-    "last_seen": 1779494349,
+    "last_seen": 1779515985,
     "first_seen": 1766102400
   },
   {
@@ -542,7 +556,7 @@
     "time": 1765324800,
     "time_str": "2025-12-10",
     "theme": "詐騙",
-    "last_seen": 1779494349,
+    "last_seen": 1779515985,
     "first_seen": 1765324800
   },
   {
@@ -584,8 +598,22 @@
     "time": 1762128000,
     "time_str": "2025-11-3",
     "theme": "銀行",
-    "last_seen": 1779494333,
+    "last_seen": 1779515968,
     "first_seen": 1762128000
+  },
+  {
+    "id": "DOxjliiEWJ3",
+    "username": "josh_ling38",
+    "user_url": "https://www.threads.com/@josh_ling38",
+    "text": "2025-9-19",
+    "url": "https://www.threads.com/@josh_ling38/post/DOxjliiEWJ3",
+    "likes": 0,
+    "replies": 0,
+    "time": 1758240000,
+    "time_str": "2025-9-19",
+    "theme": "詐騙",
+    "last_seen": 1779515985,
+    "first_seen": 1758240000
   },
   {
     "id": "DOZ_pwhkS_P",
@@ -626,7 +654,7 @@
     "time": 1753833600,
     "time_str": "2025-7-30",
     "theme": "銀行",
-    "last_seen": 1779494333,
+    "last_seen": 1779515968,
     "first_seen": 1753833600
   },
   {
@@ -766,7 +794,7 @@
     "time": 1727913600,
     "time_str": "2024-10-3",
     "theme": "詐騙",
-    "last_seen": 1779494349,
+    "last_seen": 1779515985,
     "first_seen": 1727913600
   },
   {
