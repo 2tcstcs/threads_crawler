@@ -275,7 +275,7 @@ html:not(.dark) .dark-icon { display: block; }
 }
 
 .stat-value {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'SF Pro Display', -apple-system, system-ui, sans-serif;
   font-size: 1.35rem;
   font-weight: 700;
   margin-top: 2px;
@@ -416,7 +416,7 @@ input[type="text"], input[type="number"], input[type="datetime-local"], select {
   background-color: var(--bg-input);
   border: 1px solid var(--border-color);
   color: var(--text-main);
-  border-radius: 4px; /* Standard Google Outlined corner */
+  border-radius: 8px;
   font-size: 0.88rem;
   outline: none;
   transition: var(--transition-m3);
@@ -532,7 +532,7 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="datetime-local
 }
 
 .results-count span {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'SF Pro Display', -apple-system, system-ui, sans-serif;
   color: var(--google-blue);
   font-weight: 700;
   font-size: 1.1rem;
@@ -656,10 +656,10 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="datetime-local
   border-radius: 4px;
 }
 
-.theme-badge.theme-tag-0 { background: rgba(26, 115, 232, 0.12); color: var(--theme-0); }
-.theme-badge.theme-tag-1 { background: rgba(30, 142, 62, 0.12); color: var(--theme-1); }
-.theme-badge.theme-tag-2 { background: rgba(249, 171, 0, 0.12); color: var(--theme-2); }
-.theme-badge.theme-tag-3 { background: rgba(217, 48, 37, 0.12); color: var(--theme-3); }
+.theme-badge.theme-tag-0 { background: rgba(0, 102, 204, 0.1); color: var(--theme-0); }
+.theme-badge.theme-tag-1 { background: rgba(52, 199, 89, 0.1); color: var(--theme-1); }
+.theme-badge.theme-tag-2 { background: rgba(255, 149, 0, 0.1); color: var(--theme-2); }
+.theme-badge.theme-tag-3 { background: rgba(255, 59, 48, 0.1); color: var(--theme-3); }
 
 .card-body {
   padding: 0 16px 14px 16px;
@@ -1005,7 +1005,7 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="datetime-local
 }
 
 .delete-row-btn:hover {
-  background-color: rgba(217, 48, 37, 0.08);
+  background-color: rgba(255, 59, 48, 0.08);
 }
 
 .sm-btn {
@@ -1168,7 +1168,7 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="datetime-local
 }
 
 .hourly-cell-clickable:hover {
-  color: #1557b0;
+  color: var(--apple-blue-hover);
 }
 
 .hourly-cell-empty {
@@ -1249,7 +1249,7 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="datetime-local
 
 /* Anomaly Alert Banner Styling */
 .anomaly-banner {
-  background-color: rgba(217, 48, 37, 0.08);
+  background-color: rgba(255, 59, 48, 0.08);
   border: 1px solid var(--theme-3);
   border-radius: var(--radius-md);
   padding: 14px 20px;
@@ -1339,12 +1339,12 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="datetime-local
 }
 
 .sentiment-badge.sentiment-positive {
-  background: rgba(30, 142, 62, 0.12);
+  background: rgba(52, 199, 89, 0.12);
   color: var(--theme-1);
 }
 
 .sentiment-badge.sentiment-negative {
-  background: rgba(217, 48, 37, 0.12);
+  background: rgba(255, 59, 48, 0.12);
   color: var(--theme-3);
 }
 

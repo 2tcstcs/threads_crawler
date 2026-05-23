@@ -14,14 +14,10 @@ const RSS_MIRRORS = [
   "https://rsshub.app" // Official fallback
 ];
 
-// CSS Google-inspired colors matching index.css
-const THEME_COLORS = [
-  '#1a73e8', // Theme 0: Google Blue
-  '#1e8e3e', // Theme 1: Google Green
-  '#f9ab00', // Theme 2: Google Yellow
-  '#d93025'  // Theme 3: Google Red
-];
-const FALLBACK_COLOR = '#5f6368'; // Google Gray
+// Apple Design System colors matching index.css (mode-aware)
+const THEME_COLORS_LIGHT = ['#0066cc', '#34c759', '#ff9500', '#ff3b30'];
+const THEME_COLORS_DARK = ['#2997ff', '#30d158', '#ff9f0a', '#ff453a'];
+const FALLBACK_COLOR = '#8e8e93'; // Apple Gray
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Dark/Light Mode
@@ -131,8 +127,10 @@ function getThemeColorIndex(themeName) {
  * Get color string by theme
  */
 function getThemeColor(themeName) {
+  const isDark = document.documentElement.classList.contains('dark');
+  const colors = isDark ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
   const idx = getThemeColorIndex(themeName);
-  return idx >= 0 ? THEME_COLORS[idx] : FALLBACK_COLOR;
+  return idx >= 0 ? colors[idx] : FALLBACK_COLOR;
 }
 
 /**
@@ -791,7 +789,7 @@ function updateCharts(filteredPosts) {
         labels: uniqueThemes,
         datasets: [{
           data: hasData ? volumeData : [1],
-          backgroundColor: hasData ? themeBorderColors : ['#e0e0e0'],
+          backgroundColor: hasData ? themeBorderColors : ['#e8e8ed'],
           borderWidth: isDark ? 2 : 1,
           borderColor: isDark ? '#1f1f1f' : '#ffffff'
         }]
@@ -806,7 +804,7 @@ function updateCharts(filteredPosts) {
             labels: {
               color: textColor,
               font: {
-                family: 'Roboto',
+                family: 'system-ui',
                 size: 11,
                 weight: '500'
               },
@@ -844,14 +842,14 @@ function updateCharts(filteredPosts) {
           {
             label: '平均按讚數',
             data: avgLikesData,
-            backgroundColor: '#ea4335',
+            backgroundColor: isDark ? '#ff453a' : '#ff3b30',
             borderRadius: 4,
             barThickness: 16
           },
           {
             label: '平均回覆數',
             data: avgRepliesData,
-            backgroundColor: '#1a73e8',
+            backgroundColor: isDark ? '#2997ff' : '#0066cc',
             borderRadius: 4,
             barThickness: 16
           }
@@ -866,7 +864,7 @@ function updateCharts(filteredPosts) {
             labels: {
               color: textColor,
               font: {
-                family: 'Roboto',
+                family: 'system-ui',
                 size: 11
               },
               boxWidth: 12
@@ -878,14 +876,14 @@ function updateCharts(filteredPosts) {
             grid: { display: false },
             ticks: {
               color: textColor,
-              font: { family: 'Roboto', size: 11, weight: '500' }
+              font: { family: 'system-ui', size: 11, weight: '500' }
             }
           },
           y: {
             grid: { color: gridColor },
             ticks: {
               color: textColor,
-              font: { family: 'Roboto', size: 10 }
+              font: { family: 'system-ui', size: 10 }
             }
           }
         }
@@ -973,7 +971,7 @@ function updateCharts(filteredPosts) {
             labels: {
               color: textColor,
               font: {
-                family: 'Roboto',
+                family: 'system-ui',
                 size: 11
               },
               boxWidth: 12
@@ -985,7 +983,7 @@ function updateCharts(filteredPosts) {
             grid: { display: false },
             ticks: {
               color: textColor,
-              font: { family: 'Roboto', size: 10 }
+              font: { family: 'system-ui', size: 10 }
             }
           },
           y: {
@@ -993,7 +991,7 @@ function updateCharts(filteredPosts) {
             ticks: {
               color: textColor,
               stepSize: 1,
-              font: { family: 'Roboto', size: 10 }
+              font: { family: 'system-ui', size: 10 }
             },
             min: 0
           }
@@ -1018,7 +1016,9 @@ function updateCharts(filteredPosts) {
       sentimentChart.destroy();
     }
     
-    const sColors = ['var(--theme-1)', 'var(--theme-3)', 'var(--theme-fallback)'];
+    const sColors = isDark
+      ? ['#30d158', '#ff453a', '#8e8e93']
+      : ['#34c759', '#ff3b30', '#8e8e93'];
 
     sentimentChart = new Chart(sentCtx, {
       type: 'doughnut',
@@ -1026,7 +1026,7 @@ function updateCharts(filteredPosts) {
         labels: ['正面', '負面', '中性'],
         datasets: [{
           data: hasSentimentData ? sentimentData : [1],
-          backgroundColor: hasSentimentData ? sColors : ['#e0e0e0'],
+          backgroundColor: hasSentimentData ? sColors : ['#e8e8ed'],
           borderWidth: isDark ? 2 : 1,
           borderColor: isDark ? '#1f1f1f' : '#ffffff'
         }]
@@ -1040,7 +1040,7 @@ function updateCharts(filteredPosts) {
             position: 'right',
             labels: {
               color: textColor,
-              font: { family: 'Roboto', size: 11, weight: '500' },
+              font: { family: 'system-ui', size: 11, weight: '500' },
               boxWidth: 12
             }
           },
@@ -1090,14 +1090,14 @@ function updateCharts(filteredPosts) {
           {
             label: '平均按讚數',
             data: avgSentimentLikesData,
-            backgroundColor: '#ea4335',
+            backgroundColor: isDark ? '#ff453a' : '#ff3b30',
             borderRadius: 4,
             barThickness: 16
           },
           {
             label: '平均回覆數',
             data: avgSentimentRepliesData,
-            backgroundColor: '#1a73e8',
+            backgroundColor: isDark ? '#2997ff' : '#0066cc',
             borderRadius: 4,
             barThickness: 16
           }
@@ -1112,7 +1112,7 @@ function updateCharts(filteredPosts) {
             labels: {
               color: textColor,
               font: {
-                family: 'Roboto',
+                family: 'system-ui',
                 size: 11
               },
               boxWidth: 12
@@ -1124,14 +1124,14 @@ function updateCharts(filteredPosts) {
             grid: { display: false },
             ticks: {
               color: textColor,
-              font: { family: 'Roboto', size: 11, weight: '500' }
+              font: { family: 'system-ui', size: 11, weight: '500' }
             }
           },
           y: {
             grid: { color: gridColor },
             ticks: {
               color: textColor,
-              font: { family: 'Roboto', size: 10 }
+              font: { family: 'system-ui', size: 10 }
             }
           }
         }
@@ -1459,11 +1459,11 @@ function renderWordCloud(keywords) {
   const colors = [
     'var(--theme-0)', // Blue
     'var(--theme-1)', // Green
-    '#f9ab00',        // Yellow
+    'var(--theme-2)', // Orange
     'var(--theme-3)', // Red
-    '#a142f4',        // Purple
-    '#00acc1',        // Cyan
-    '#e91e63'         // Pink
+    '#af52de',        // Apple Purple
+    '#5ac8fa',        // Apple Teal
+    '#ff2d55'         // Apple Pink
   ];
 
   keywords.forEach((item, idx) => {
