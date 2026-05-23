@@ -1,5 +1,19 @@
 window.crawledData = [
   {
+    "id": "DYoo8FMmUUy",
+    "username": "owen.zkl",
+    "user_url": "https://www.threads.com/@owen.zkl",
+    "text": "理專",
+    "url": "https://www.threads.com/@owen.zkl/post/DYoo8FMmUUy",
+    "likes": 0,
+    "replies": 0,
+    "time": 1779454826,
+    "time_str": "1天",
+    "theme": "銀行",
+    "last_seen": 1779541226,
+    "first_seen": 1779454826
+  },
+  {
     "id": "DYo5ZorjbLS",
     "username": "hk_workingking.g",
     "user_url": "https://www.threads.com/@hk_workingking.g",
@@ -136,7 +150,7 @@ window.crawledData = [
     "time": 1779184240,
     "time_str": "3天",
     "theme": "銀行",
-    "last_seen": 1779531717,
+    "last_seen": 1779541226,
     "first_seen": 1779184240
   },
   {
@@ -178,7 +192,7 @@ window.crawledData = [
     "time": 1778630400,
     "time_str": "2026-5-13",
     "theme": "銀行",
-    "last_seen": 1779504602,
+    "last_seen": 1779541226,
     "first_seen": 1778630400
   },
   {
@@ -210,6 +224,20 @@ window.crawledData = [
     "first_seen": 1778457600
   },
   {
+    "id": "DYI-S_sE3JP",
+    "username": "nkkngai",
+    "user_url": "https://www.threads.com/@nkkngai",
+    "text": "2026-5-10",
+    "url": "https://www.threads.com/@nkkngai/post/DYI-S_sE3JP",
+    "likes": 0,
+    "replies": 0,
+    "time": 1778371200,
+    "time_str": "2026-5-10",
+    "theme": "銀行",
+    "last_seen": 1779541226,
+    "first_seen": 1778371200
+  },
+  {
     "id": "DYDuSxNk9Eh",
     "username": "kibit1122",
     "user_url": "https://www.threads.com/@kibit1122",
@@ -220,7 +248,7 @@ window.crawledData = [
     "time": 1778198400,
     "time_str": "2026-5-8",
     "theme": "銀行",
-    "last_seen": 1779531717,
+    "last_seen": 1779541226,
     "first_seen": 1778198400
   },
   {
@@ -262,7 +290,7 @@ window.crawledData = [
     "time": 1777766400,
     "time_str": "2026-5-3",
     "theme": "詐騙",
-    "last_seen": 1779537309,
+    "last_seen": 1779541243,
     "first_seen": 1777766400
   },
   {
@@ -304,7 +332,7 @@ window.crawledData = [
     "time": 1777334400,
     "time_str": "2026-4-28",
     "theme": "銀行",
-    "last_seen": 1779531717,
+    "last_seen": 1779541226,
     "first_seen": 1777334400
   },
   {
@@ -332,7 +360,7 @@ window.crawledData = [
     "time": 1777161600,
     "time_str": "2026-4-26",
     "theme": "銀行",
-    "last_seen": 1779504602,
+    "last_seen": 1779541226,
     "first_seen": 1777161600
   },
   {
@@ -374,7 +402,7 @@ window.crawledData = [
     "time": 1776902400,
     "time_str": "2026-4-23",
     "theme": "銀行",
-    "last_seen": 1779469394,
+    "last_seen": 1779541226,
     "first_seen": 1776902400
   },
   {
@@ -402,7 +430,7 @@ window.crawledData = [
     "time": 1776124800,
     "time_str": "2026-4-14",
     "theme": "詐騙",
-    "last_seen": 1779469411,
+    "last_seen": 1779541243,
     "first_seen": 1776124800
   },
   {
@@ -416,7 +444,7 @@ window.crawledData = [
     "time": 1776124800,
     "time_str": "2026-4-14",
     "theme": "詐騙",
-    "last_seen": 1779494349,
+    "last_seen": 1779541243,
     "first_seen": 1776124800
   },
   {
@@ -430,7 +458,7 @@ window.crawledData = [
     "time": 1775260800,
     "time_str": "2026-4-4",
     "theme": "詐騙",
-    "last_seen": 1779504619,
+    "last_seen": 1779541243,
     "first_seen": 1775260800
   },
   {
@@ -444,7 +472,7 @@ window.crawledData = [
     "time": 1774396800,
     "time_str": "2026-3-25",
     "theme": "銀行",
-    "last_seen": 1779531717,
+    "last_seen": 1779541226,
     "first_seen": 1774396800
   },
   {
@@ -460,6 +488,20 @@ window.crawledData = [
     "theme": "台股",
     "last_seen": 1779443049,
     "first_seen": 1773417600
+  },
+  {
+    "id": "DVew5RvEoyk",
+    "username": "ailing6675",
+    "user_url": "https://www.threads.com/@ailing6675",
+    "text": "2026-3-5",
+    "url": "https://www.threads.com/@ailing6675/post/DVew5RvEoyk",
+    "likes": 0,
+    "replies": 0,
+    "time": 1772668800,
+    "time_str": "2026-3-5",
+    "theme": "銀行",
+    "last_seen": 1779541226,
+    "first_seen": 1772668800
   },
   {
     "id": "DVNFkxfEqyR",
@@ -514,7 +556,7 @@ window.crawledData = [
     "time": 1767398400,
     "time_str": "2026-1-3",
     "theme": "銀行",
-    "last_seen": 1779504602,
+    "last_seen": 1779541226,
     "first_seen": 1767398400
   },
   {
@@ -528,7 +570,7 @@ window.crawledData = [
     "time": 1766361600,
     "time_str": "2025-12-22",
     "theme": "詐騙",
-    "last_seen": 1779504619,
+    "last_seen": 1779541243,
     "first_seen": 1766361600
   },
   {
@@ -542,7 +584,7 @@ window.crawledData = [
     "time": 1766102400,
     "time_str": "2025-12-19",
     "theme": "詐騙",
-    "last_seen": 1779537309,
+    "last_seen": 1779541243,
     "first_seen": 1766102400
   },
   {
@@ -584,7 +626,7 @@ window.crawledData = [
     "time": 1765324800,
     "time_str": "2025-12-10",
     "theme": "詐騙",
-    "last_seen": 1779537309,
+    "last_seen": 1779541243,
     "first_seen": 1765324800
   },
   {
@@ -626,7 +668,7 @@ window.crawledData = [
     "time": 1762128000,
     "time_str": "2025-11-3",
     "theme": "銀行",
-    "last_seen": 1779531717,
+    "last_seen": 1779541226,
     "first_seen": 1762128000
   },
   {
@@ -644,6 +686,34 @@ window.crawledData = [
     "first_seen": 1760659200
   },
   {
+    "id": "DPl18CzkQ_S",
+    "username": "blackpink885520",
+    "user_url": "https://www.threads.com/@blackpink885520",
+    "text": "2025-10-9",
+    "url": "https://www.threads.com/@blackpink885520/post/DPl18CzkQ_S",
+    "likes": 0,
+    "replies": 0,
+    "time": 1759968000,
+    "time_str": "2025-10-9",
+    "theme": "詐騙",
+    "last_seen": 1779541243,
+    "first_seen": 1759968000
+  },
+  {
+    "id": "DPQvf3QCWvv",
+    "username": "jasonyeh2638",
+    "user_url": "https://www.threads.com/@jasonyeh2638",
+    "text": "2025-10-1",
+    "url": "https://www.threads.com/@jasonyeh2638/post/DPQvf3QCWvv",
+    "likes": 0,
+    "replies": 0,
+    "time": 1759276800,
+    "time_str": "2025-10-1",
+    "theme": "詐騙",
+    "last_seen": 1779541243,
+    "first_seen": 1759276800
+  },
+  {
     "id": "DOxjliiEWJ3",
     "username": "josh_ling38",
     "user_url": "https://www.threads.com/@josh_ling38",
@@ -654,7 +724,7 @@ window.crawledData = [
     "time": 1758240000,
     "time_str": "2025-9-19",
     "theme": "詐騙",
-    "last_seen": 1779537309,
+    "last_seen": 1779541243,
     "first_seen": 1758240000
   },
   {
@@ -670,6 +740,34 @@ window.crawledData = [
     "theme": "台股",
     "last_seen": 1779443049,
     "first_seen": 1757433600
+  },
+  {
+    "id": "DNj1Amhxqxl",
+    "username": "yenray_tw",
+    "user_url": "https://www.threads.com/@yenray_tw",
+    "text": "2025-8-20",
+    "url": "https://www.threads.com/@yenray_tw/post/DNj1Amhxqxl",
+    "likes": 0,
+    "replies": 0,
+    "time": 1755648000,
+    "time_str": "2025-8-20",
+    "theme": "詐騙",
+    "last_seen": 1779541243,
+    "first_seen": 1755648000
+  },
+  {
+    "id": "DM734HhPezg",
+    "username": "catinforest1997",
+    "user_url": "https://www.threads.com/@catinforest1997",
+    "text": "2025-8-4",
+    "url": "https://www.threads.com/@catinforest1997/post/DM734HhPezg",
+    "likes": 0,
+    "replies": 0,
+    "time": 1754265600,
+    "time_str": "2025-8-4",
+    "theme": "詐騙",
+    "last_seen": 1779541243,
+    "first_seen": 1754265600
   },
   {
     "id": "DM0o-cbTOKd",
@@ -696,8 +794,22 @@ window.crawledData = [
     "time": 1753833600,
     "time_str": "2025-7-30",
     "theme": "銀行",
-    "last_seen": 1779531717,
+    "last_seen": 1779541226,
     "first_seen": 1753833600
+  },
+  {
+    "id": "DMMg67gqkwp",
+    "username": "roger413413",
+    "user_url": "https://www.threads.com/@roger413413",
+    "text": "我真的對台灣的銀行很失望\n每次去領錢都顯示餘額不足",
+    "url": "https://www.threads.com/@roger413413/post/DMMg67gqkwp",
+    "likes": 0,
+    "replies": 0,
+    "time": 1752710400,
+    "time_str": "2025-7-17",
+    "theme": "銀行",
+    "last_seen": 1779541226,
+    "first_seen": 1752710400
   },
   {
     "id": "DMKedf_SsoP",
@@ -712,6 +824,34 @@ window.crawledData = [
     "theme": "詐騙",
     "last_seen": 1779504619,
     "first_seen": 1752624000
+  },
+  {
+    "id": "DL6sSCvy2OO",
+    "username": "_910907",
+    "user_url": "https://www.threads.com/@_910907",
+    "text": "2025-7-10",
+    "url": "https://www.threads.com/@_910907/post/DL6sSCvy2OO",
+    "likes": 0,
+    "replies": 0,
+    "time": 1752105600,
+    "time_str": "2025-7-10",
+    "theme": "詐騙",
+    "last_seen": 1779541243,
+    "first_seen": 1752105600
+  },
+  {
+    "id": "DLrvSesR-fq",
+    "username": "qixiangling",
+    "user_url": "https://www.threads.com/@qixiangling",
+    "text": "2025-7-4",
+    "url": "https://www.threads.com/@qixiangling/post/DLrvSesR-fq",
+    "likes": 0,
+    "replies": 0,
+    "time": 1751587200,
+    "time_str": "2025-7-4",
+    "theme": "銀行",
+    "last_seen": 1779541226,
+    "first_seen": 1751587200
   },
   {
     "id": "DJmW9iFSzzc",
@@ -780,7 +920,7 @@ window.crawledData = [
     "time": 1739664000,
     "time_str": "2025-2-16",
     "theme": "詐騙",
-    "last_seen": 1779494349,
+    "last_seen": 1779541243,
     "first_seen": 1739664000
   },
   {
@@ -822,7 +962,7 @@ window.crawledData = [
     "time": 1736812800,
     "time_str": "2025-1-14",
     "theme": "銀行",
-    "last_seen": 1779494333,
+    "last_seen": 1779541226,
     "first_seen": 1736812800
   },
   {
@@ -850,7 +990,7 @@ window.crawledData = [
     "time": 1727913600,
     "time_str": "2024-10-3",
     "theme": "詐騙",
-    "last_seen": 1779537309,
+    "last_seen": 1779541243,
     "first_seen": 1727913600
   },
   {
@@ -892,7 +1032,7 @@ window.crawledData = [
     "time": 1725494400,
     "time_str": "2024-9-5",
     "theme": "銀行",
-    "last_seen": 1779504602,
+    "last_seen": 1779541226,
     "first_seen": 1725494400
   },
   {
@@ -906,7 +1046,7 @@ window.crawledData = [
     "time": 1725494400,
     "time_str": "2024-9-5",
     "theme": "銀行",
-    "last_seen": 1779504602,
+    "last_seen": 1779541226,
     "first_seen": 1725494400
   },
   {
@@ -934,7 +1074,7 @@ window.crawledData = [
     "time": 1721606400,
     "time_str": "2024-7-22",
     "theme": "銀行",
-    "last_seen": 1779504602,
+    "last_seen": 1779541226,
     "first_seen": 1721606400
   },
   {
@@ -966,6 +1106,20 @@ window.crawledData = [
     "first_seen": 1716681600
   },
   {
+    "id": "C5u0PXJv7Rb",
+    "username": "1swxw",
+    "user_url": "https://www.threads.com/@1swxw",
+    "text": "2024-4-14",
+    "url": "https://www.threads.com/@1swxw/post/C5u0PXJv7Rb",
+    "likes": 0,
+    "replies": 0,
+    "time": 1713052800,
+    "time_str": "2024-4-14",
+    "theme": "詐騙",
+    "last_seen": 1779541243,
+    "first_seen": 1713052800
+  },
+  {
     "id": "C5q1X-vSJF3",
     "username": "fi._aser",
     "user_url": "https://www.threads.com/@fi._aser",
@@ -976,7 +1130,7 @@ window.crawledData = [
     "time": 1712966400,
     "time_str": "2024-4-13",
     "theme": "詐騙",
-    "last_seen": 1779504619,
+    "last_seen": 1779541243,
     "first_seen": 1712966400
   }
 ];
