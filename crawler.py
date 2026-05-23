@@ -254,7 +254,7 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
             })
             
     except Exception as e:
-        print(f"[Error] Error scraping theme {theme}: {e}")
+        print(f"[Error] Error scraping theme {theme_name}: {e}")
         
     return posts
 
