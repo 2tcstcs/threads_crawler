@@ -3,6 +3,7 @@ let allPosts = [];
 let themeVolumeChart = null;
 let themeEngagementChart = null;
 let hourlyTrendChart = null;
+let sentimentChart = null;
 
 // CSS Google-inspired colors matching index.css
 const THEME_COLORS = [
@@ -26,7 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // 4. Initialize Settings Modal
   initSettings();
 
-  // 5. Initial Render & Filter
+  // 5. Bind anomaly banner close button
+  const bannerClose = document.getElementById('banner-close-btn');
+  if (bannerClose) {
+    bannerClose.addEventListener('click', () => {
+      document.getElementById('anomaly-alert-banner').classList.add('hidden');
+      window.bannerDismissed = true;
+    });
+  }
+
+  // 6. Initial Render & Filter
   updateDashboard();
 });
 
@@ -67,6 +77,10 @@ function initTheme() {
 function loadCrawledData() {
   if (window.crawledData && Array.isArray(window.crawledData)) {
     allPosts = window.crawledData;
+    // Classify sentiment for all posts dynamically
+    allPosts.forEach(post => {
+      post.sentiment = classifySentiment(post.text);
+    });
   } else {
     allPosts = [];
     console.warn("window.crawledData is not defined or is not an array. Using empty mock dataset.");
@@ -211,6 +225,14 @@ function setupEventListeners() {
       }, 500);
     });
   }
+
+  // Sentiment Filter dropdown
+  const sentimentSelect = document.getElementById('filter-sentiment');
+  if (sentimentSelect) {
+    sentimentSelect.addEventListener('change', () => {
+      updateDashboard();
+    });
+  }
 }
 
 /**
@@ -225,6 +247,9 @@ function clearAllFilters() {
 
   const sortSelect = document.getElementById('filter-sort');
   if (sortSelect) sortSelect.value = 'time-desc';
+
+  const sentimentSelect = document.getElementById('filter-sentiment');
+  if (sentimentSelect) sentimentSelect.value = 'all';
 
   // Check all checkboxes
   const checkboxes = document.querySelectorAll('#theme-selector-list input[type="checkbox"]');
@@ -244,6 +269,7 @@ function getFilteredAndSortedPosts() {
   const searchQuery = document.getElementById('filter-search')?.value.toLowerCase().trim() || '';
   const minLikes = parseInt(document.getElementById('filter-likes-min')?.value) || 0;
   const sortVal = document.getElementById('filter-sort')?.value || 'time-desc';
+  const sentimentVal = document.getElementById('filter-sentiment')?.value || 'all';
   
   // Get checked themes
   const checkedThemes = [];
@@ -256,18 +282,29 @@ function getFilteredAndSortedPosts() {
 
   // 2. Perform filtering
   let filtered = allPosts.filter(post => {
-    // Theme check
-    if (checkedThemes.length > 0 && !checkedThemes.includes(post.theme)) {
+    // Anomaly deep dive override
+    if (window.deepDiveFilter) {
+      if (String(post.theme).trim() !== String(window.deepDiveFilter.theme).trim()) return false;
+      if (post.time < window.deepDiveFilter.startTime) return false;
+    }
+
+    // Theme check (ignored in deep dive override unless manually checked)
+    if (!window.deepDiveFilter && checkedThemes.length > 0 && !checkedThemes.includes(post.theme)) {
       return false;
     }
     // Min likes check
     if (post.likes < minLikes) {
       return false;
     }
+    // Sentiment check
+    if (sentimentVal !== 'all' && post.sentiment !== sentimentVal) {
+      return false;
+    }
     // Search query check (search in user, text, or theme)
     if (searchQuery) {
+      const cleanQuery = searchQuery.replace('@', '');
       const matchesText = post.text && post.text.toLowerCase().includes(searchQuery);
-      const matchesUser = post.username && post.username.toLowerCase().includes(searchQuery);
+      const matchesUser = post.username && post.username.toLowerCase().includes(cleanQuery);
       const matchesTheme = post.theme && post.theme.toLowerCase().includes(searchQuery);
       if (!matchesText && !matchesUser && !matchesTheme) {
         return false;
@@ -318,6 +355,12 @@ function updateDashboard() {
 
   // 5. Update Visualisation Charts
   updateCharts(filteredPosts);
+
+  // 6. Render Influencer Leaderboard
+  renderInfluencerLeaderboard(filteredPosts);
+
+  // 7. Check Anomaly Spike Alerts
+  checkAnomaly(filteredPosts);
 }
 
 /**
@@ -434,6 +477,26 @@ function renderFilterChips() {
     });
   }
 
+  // Sentiment chip
+  const sentimentVal = document.getElementById('filter-sentiment')?.value || 'all';
+  if (sentimentVal !== 'all') {
+    let sText = '正面';
+    if (sentimentVal === 'negative') sText = '負面';
+    if (sentimentVal === 'neutral') sText = '中性';
+    createChip(`情感: ${sText}`, () => {
+      document.getElementById('filter-sentiment').value = 'all';
+      updateDashboard();
+    });
+  }
+
+  // Anomaly Deep Dive chip
+  if (window.deepDiveFilter) {
+    createChip(`暴衝分析: ${window.deepDiveFilter.theme} (2小時內)`, () => {
+      window.deepDiveFilter = null;
+      clearAllFilters();
+    });
+  }
+
   // Unchecked theme chips
   const checkboxes = document.querySelectorAll('#theme-selector-list input[type="checkbox"]');
   const uncheckedThemes = [];
@@ -500,6 +563,17 @@ function renderPostCards(posts) {
     
     const card = document.createElement('div');
     card.className = `post-card ${themeClass}`;
+
+    // Sentiment badge logic
+    let sentimentClass = 'sentiment-neutral';
+    let sentimentText = '中性';
+    if (post.sentiment === 'positive') {
+      sentimentClass = 'sentiment-positive';
+      sentimentText = '正面';
+    } else if (post.sentiment === 'negative') {
+      sentimentClass = 'sentiment-negative';
+      sentimentText = '負面';
+    }
     
     card.innerHTML = `
       <div class="card-header">
@@ -514,7 +588,10 @@ function renderPostCards(posts) {
             </a>
           </div>
         </div>
-        <span class="theme-badge ${themeClass}">${post.theme || '預設'}</span>
+        <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
+          <span class="sentiment-badge ${sentimentClass}">${sentimentText}</span>
+          <span class="theme-badge ${themeClass}">${post.theme || '預設'}</span>
+        </div>
       </div>
       
       <div class="card-body">
@@ -830,6 +907,414 @@ function updateCharts(filteredPosts) {
 
   // Render the Hourly Crawled List Table
   renderHourlyCrawlList(filteredPosts);
+
+  // Render Sentiment Breakdown Chart
+  const positiveCount = filteredPosts.filter(p => p.sentiment === 'positive').length;
+  const negativeCount = filteredPosts.filter(p => p.sentiment === 'negative').length;
+  const neutralCount = filteredPosts.filter(p => p.sentiment === 'neutral').length;
+  const sentimentData = [positiveCount, negativeCount, neutralCount];
+  const hasSentimentData = positiveCount > 0 || negativeCount > 0 || neutralCount > 0;
+
+  const sentCtx = document.getElementById('sentimentChart')?.getContext('2d');
+  if (sentCtx) {
+    if (sentimentChart) {
+      sentimentChart.destroy();
+    }
+    
+    const sColors = ['var(--theme-1)', 'var(--theme-3)', 'var(--theme-fallback)'];
+
+    sentimentChart = new Chart(sentCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['正面', '負面', '中性'],
+        datasets: [{
+          data: hasSentimentData ? sentimentData : [1],
+          backgroundColor: hasSentimentData ? sColors : ['#e0e0e0'],
+          borderWidth: isDark ? 2 : 1,
+          borderColor: isDark ? '#1f1f1f' : '#ffffff'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            position: 'right',
+            labels: {
+              color: textColor,
+              font: { family: 'Roboto', size: 11, weight: '500' },
+              boxWidth: 12
+            }
+          },
+          tooltip: {
+            enabled: hasSentimentData,
+            callbacks: {
+              label: function(context) {
+                const val = context.raw;
+                const total = context.dataset.data.reduce((a,b) => a+b, 0);
+                const percentage = Math.round((val / total) * 100);
+                return ` ${context.label}: ${val} 篇 (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Render the Word Cloud tags
+  const keywords = extractKeywords(filteredPosts);
+  renderWordCloud(keywords);
+}
+
+/**
+ * Classify a post's sentiment based on local dictionary keywords
+ */
+function classifySentiment(text) {
+  if (!text) return 'neutral';
+  
+  const positiveWords = ["推", "好用", "厲害", "讚", "多軍", "看好"];
+  const negativeWords = ["雷", "難用", "爛", "傻眼", "災情", "空軍", "慘"];
+  
+  let score = 0;
+  const lowerText = text.toLowerCase();
+  
+  positiveWords.forEach(w => {
+    const escaped = w.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const matches = lowerText.match(new RegExp(escaped, 'g'));
+    if (matches) {
+      score += matches.length;
+    }
+  });
+  
+  negativeWords.forEach(w => {
+    const escaped = w.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const matches = lowerText.match(new RegExp(escaped, 'g'));
+    if (matches) {
+      score -= matches.length;
+    }
+  });
+  
+  if (score > 0) return 'positive';
+  if (score < 0) return 'negative';
+  return 'neutral';
+}
+
+/**
+ * Rank accounts and render the top KOL list
+ */
+function renderInfluencerLeaderboard(posts) {
+  const container = document.getElementById('top-voices-list');
+  if (!container) return;
+
+  if (posts.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--text-muted);text-align:center;padding:12px;">暫無意見領袖數據</div>';
+    return;
+  }
+
+  // Aggregate stats per user
+  const userStats = {};
+  posts.forEach(post => {
+    const username = post.username;
+    if (!username || username === 'unknown') return;
+
+    if (!userStats[username]) {
+      userStats[username] = {
+        username: username,
+        postCount: 0,
+        likes: 0,
+        replies: 0
+      };
+    }
+    userStats[username].postCount += 1;
+    userStats[username].likes += (post.likes || 0);
+    userStats[username].replies += (post.replies || 0);
+  });
+
+  // Calculate Engagement Score: Likes * 1 + Replies * 2
+  const leaders = Object.values(userStats).map(user => {
+    const score = (user.likes * 1) + (user.replies * 2);
+    return {
+      username: user.username,
+      postCount: user.postCount,
+      score: score
+    };
+  });
+
+  // Sort by score descending, then postCount descending
+  leaders.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.postCount - a.postCount;
+  });
+
+  // Get Top 5
+  const top5 = leaders.slice(0, 5);
+
+  if (top5.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--text-muted);text-align:center;padding:12px;">暫無意見領袖數據</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  top5.forEach(leader => {
+    const avatarChar = leader.username.substring(0, 2).toUpperCase();
+    const div = document.createElement('div');
+    div.className = 'voice-leader-item';
+    
+    div.innerHTML = `
+      <div class="voice-leader-details">
+        <div class="user-avatar" style="width: 26px; height: 26px; font-size: 0.72rem; flex-shrink: 0;">${avatarChar}</div>
+        <div class="voice-leader-meta">
+          <span class="voice-leader-name">@${escapeHTML(leader.username)}</span>
+          <span class="voice-leader-count">發文數量: ${leader.postCount} 篇</span>
+        </div>
+      </div>
+      <span class="voice-leader-score-badge" title="社群影響力分數 = 讚數*1 + 回覆數*2">
+        影響力: ${formatCount(leader.score)}
+      </span>
+    `;
+
+    // Click handler to filter feed by this user
+    div.onclick = () => {
+      const searchInput = document.getElementById('filter-search');
+      if (searchInput) {
+        searchInput.value = `@${leader.username}`;
+        updateDashboard();
+        // Scroll to feed
+        document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    container.appendChild(div);
+  });
+}
+
+/**
+ * Run hourly volume statistical spike detection
+ */
+function checkAnomaly(posts) {
+  // If user dismissed the banner, do not show it again during this session
+  if (window.bannerDismissed) return;
+
+  const uniqueThemes = getUniqueThemes();
+  const banner = document.getElementById('anomaly-alert-banner');
+  const bannerText = banner?.querySelector('.banner-text');
+  const deepDiveBtn = document.getElementById('banner-action-btn');
+  
+  if (!banner || !bannerText) return;
+
+  // Find latest timestamp as anchor
+  let anchorTime = Math.floor(Date.now() / 1000);
+  let latestPostTime = 0;
+  posts.forEach(p => {
+    if (p.time && p.time > latestPostTime) {
+      latestPostTime = p.time;
+    }
+  });
+  if (latestPostTime > 0) {
+    anchorTime = latestPostTime;
+  }
+
+  let detectedAnomaly = null;
+  let maxSurgePct = 0;
+
+  uniqueThemes.forEach(theme => {
+    const hourlyCounts = [];
+    
+    // Get hourly counts for the last 24 hours
+    for (let i = 23; i >= 0; i--) {
+      const binStart = anchorTime - (i + 1) * 3600;
+      const binEnd = anchorTime - i * 3600;
+      
+      const count = posts.filter(p => {
+        return String(p.theme).trim() === String(theme).trim() && p.time >= binStart && p.time < binEnd;
+      }).length;
+      
+      hourlyCounts.push(count);
+    }
+    
+    // The current hour is the last element
+    const currentCount = hourlyCounts[23];
+    
+    // Calculate mean and standard deviation of the previous 23 hours
+    const prevCounts = hourlyCounts.slice(0, 23);
+    const sum = prevCounts.reduce((a, b) => a + b, 0);
+    const mean = sum / 23;
+    
+    const variance = prevCounts.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / 23;
+    const stdDev = Math.sqrt(variance);
+    
+    // Anomaly threshold: Mean + 1.5 * StdDev
+    const threshold = mean + 1.5 * stdDev;
+    
+    // To prevent false alerts on low counts, require current hour count >= 3
+    if (currentCount >= 3 && currentCount > threshold) {
+      const surgePct = Math.round(((currentCount - mean) / (mean || 1)) * 100);
+      if (surgePct > maxSurgePct) {
+        maxSurgePct = surgePct;
+        detectedAnomaly = {
+          theme: theme,
+          surgePct: surgePct,
+          currentCount: currentCount,
+          mean: mean.toFixed(1),
+          anchorTime: anchorTime
+        };
+      }
+    }
+  });
+
+  if (detectedAnomaly) {
+    banner.classList.remove('hidden');
+    bannerText.innerHTML = `⚠️ <strong>輿情暴衝警示：</strong>監測主題 <strong>[${escapeHTML(detectedAnomaly.theme)}]</strong> 於最近一小時的發文數量暴增了 <strong>${detectedAnomaly.surgePct}%</strong> (現有 ${detectedAnomaly.currentCount} 篇，歷史均值 ${detectedAnomaly.mean} 篇)！`;
+    
+    if (deepDiveBtn) {
+      deepDiveBtn.onclick = () => {
+        // 1. Check only the anomaly theme
+        const checkboxes = document.querySelectorAll('#theme-selector-list input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+          if (cb.value === detectedAnomaly.theme) {
+            cb.checked = true;
+            cb.parentElement.classList.add('checked');
+          } else {
+            cb.checked = false;
+            cb.parentElement.classList.remove('checked');
+          }
+        });
+        
+        // 2. Clear search keyword input
+        const searchInput = document.getElementById('filter-search');
+        if (searchInput) searchInput.value = '';
+
+        // 3. Set global deep dive filter: focus on anomaly theme and within last 2 hours (7200 seconds)
+        window.deepDiveFilter = {
+          theme: detectedAnomaly.theme,
+          startTime: detectedAnomaly.anchorTime - 7200
+        };
+
+        // 4. Update the dashboard
+        updateDashboard();
+        
+        // Scroll main container to top
+        document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+      };
+    }
+  } else {
+    banner.classList.add('hidden');
+  }
+}
+
+/**
+ * Extract 2-to-4 character phrases from raw text for word cloud representation
+ */
+function extractKeywords(posts) {
+  // Common Chinese/English stop words to clean token list
+  const stopWords = new Set([
+    "的", "了", "在", "我", "你", "是", "有", "不", "人", "都", "一", "他", "她", "就", "也", "會", "和", 
+    "這", "要", "對", "來", "去", "與", "及", "等", "但", "而", "跟", "那", "著", "給", "自", "由", "至", 
+    "於", "以", "因此", "所以", "但是", "然而", "如果", "雖然", "而且", "並且", "我們", "你們", "他們", 
+    "這個", "那個", "這些", "那些", "可以", "一個", "什麼", "覺得", "自己", "今天", "現在", "知道", 
+    "因為", "非常", "真的", "已經", "Threads", "threads", "post", "posts", "看", "說", "想", "做", "很"
+  ]);
+  
+  const freq = {};
+  
+  posts.forEach(post => {
+    const text = post.text || "";
+    // Replace non-alphanumeric and non-Chinese chars with spaces
+    const cleaned = text.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, " ");
+    const segments = cleaned.split(/\s+/);
+    
+    segments.forEach(seg => {
+      if (!seg) return;
+      
+      // Handle English words
+      if (/^[a-zA-Z0-9]+$/.test(seg)) {
+        const lower = seg.toLowerCase();
+        // Keep English tokens between 2 and 15 letters (exclude pure numbers)
+        if (lower.length >= 2 && lower.length <= 15 && !stopWords.has(lower) && !/^\d+$/.test(lower)) {
+          freq[lower] = (freq[lower] || 0) + 1;
+        }
+      } else {
+        // Generate n-grams (2 to 4 Chinese characters)
+        for (let len = 2; len <= 4; len++) {
+          for (let i = 0; i <= seg.length - len; i++) {
+            const gram = seg.substring(i, i + len);
+            // Skip n-grams containing digits or standard stop words
+            if (!stopWords.has(gram) && !/\d/.test(gram)) {
+              freq[gram] = (freq[gram] || 0) + 1;
+            }
+          }
+        }
+      }
+    });
+  });
+
+  // Sort tags by frequency
+  const sorted = Object.entries(freq)
+    .map(([text, count]) => ({ text, count }))
+    .filter(item => item.count >= 2) // keep recurring terms
+    .sort((a, b) => b.count - a.count);
+
+  return sorted.slice(0, 20); // Return Top 20 tags
+}
+
+/**
+ * Render the HTML-based word cloud dynamically
+ */
+function renderWordCloud(keywords) {
+  const container = document.getElementById('word-cloud-container');
+  if (!container) return;
+
+  if (keywords.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--text-muted);text-align:center;padding:48px;">暫無字雲數據</div>';
+    return;
+  }
+
+  // Scaling limits
+  const counts = keywords.map(k => k.count);
+  const maxCount = Math.max(...counts);
+  const minCount = Math.min(...counts);
+  const range = maxCount - minCount || 1;
+
+  container.innerHTML = '';
+
+  // Google Material 3 themed colors
+  const colors = [
+    'var(--theme-0)', // Blue
+    'var(--theme-1)', // Green
+    '#f9ab00',        // Yellow
+    'var(--theme-3)', // Red
+    '#a142f4',        // Purple
+    '#00acc1',        // Cyan
+    '#e91e63'         // Pink
+  ];
+
+  keywords.forEach((item, idx) => {
+    // Font scale between 0.8rem and 1.8rem
+    const size = 0.8 + ((item.count - minCount) / range) * 1.0;
+    const tag = document.createElement('span');
+    tag.className = 'word-cloud-tag';
+    tag.style.fontSize = `${size}rem`;
+    tag.style.color = colors[idx % colors.length];
+    tag.style.fontWeight = item.count === maxCount ? '700' : '500';
+    tag.style.cursor = 'pointer';
+    tag.textContent = item.text;
+    tag.title = `出現頻率: ${item.count} 次`;
+
+    // Click handler to trigger keyword search
+    tag.onclick = () => {
+      const searchInput = document.getElementById('filter-search');
+      if (searchInput) {
+        searchInput.value = item.text;
+        updateDashboard();
+        // Scroll to feed
+        document.querySelector('.main-content').scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    container.appendChild(tag);
+  });
 }
 
 /**

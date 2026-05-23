@@ -42,6 +42,17 @@
       </div>
     </header>
 
+    <!-- Anomaly Alert Banner -->
+    <div id="anomaly-alert-banner" class="anomaly-banner hidden">
+      <div class="banner-content">
+        <span class="banner-text"></span>
+        <div class="banner-actions">
+          <button id="banner-action-btn" class="banner-btn primary-banner-btn">深入分析 (Deep Dive)</button>
+          <button id="banner-close-btn" class="banner-btn-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats Section -->
     <section class="stats-section">
       <div class="stat-card" id="stat-total-posts">
@@ -83,13 +94,29 @@
 
     <!-- Visualization Charts Section -->
     <section class="charts-section">
+      <!-- Theme Volume Chart Card -->
       <div class="chart-card glass">
         <h3><i class="fa-solid fa-chart-pie"></i> 主題文章數量佔比</h3>
         <div class="chart-container">
           <canvas id="themeVolumeChart"></canvas>
         </div>
       </div>
+      <!-- Sentiment Breakdown Chart Card -->
       <div class="chart-card glass">
+        <h3><i class="fa-solid fa-face-smile"></i> 輿情情感分析佔比</h3>
+        <div class="chart-container">
+          <canvas id="sentimentChart"></canvas>
+        </div>
+      </div>
+      <!-- Word Cloud Card -->
+      <div class="chart-card glass">
+        <h3><i class="fa-solid fa-cloud"></i> 熱門主題字雲 (Word Cloud)</h3>
+        <div id="word-cloud-container" class="word-cloud-container">
+          <!-- Dynamically generated tags cloud -->
+        </div>
+      </div>
+      <!-- Theme Engagement Chart Card (now full width) -->
+      <div class="chart-card glass full-width-chart">
         <h3><i class="fa-solid fa-chart-column"></i> 主題社群互動分析 (讚數/回覆數)</h3>
         <div class="chart-container">
           <canvas id="themeEngagementChart"></canvas>
@@ -171,6 +198,17 @@
           </div>
         </div>
 
+        <!-- Sentiment Filter -->
+        <div class="filter-group">
+          <label for="filter-sentiment">情感傾向篩選</label>
+          <select id="filter-sentiment">
+            <option value="all">不限（全部文章）</option>
+            <option value="positive">僅正面情緒</option>
+            <option value="negative">僅負面情緒 (危機管理)</option>
+            <option value="neutral">僅中性情緒</option>
+          </select>
+        </div>
+
         <!-- Sort Results -->
         <div class="filter-group">
           <label for="filter-sort">文章排序方式</label>
@@ -181,6 +219,14 @@
             <option value="replies-desc">回覆數量：由多到少</option>
             <option value="text-len-desc">內文長度：由長到短</option>
           </select>
+        </div>
+
+        <!-- Top Voices Leaderboard -->
+        <div class="sidebar-header" style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h2><i class="fa-solid fa-crown" style="color: #f9ab00;"></i> 意見領袖排行 (KOL)</h2>
+        </div>
+        <div id="top-voices-list" style="display: flex; flex-direction: column; gap: 8px; margin-top: 12px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+          <!-- Dynamically populated Top Voices list -->
         </div>
       </aside>
 
