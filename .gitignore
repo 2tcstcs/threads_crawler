@@ -117,3 +117,6 @@ share/
 .DS_Store
 .localized
 Thumbs.db
+
+# Scraper logs
+logs/

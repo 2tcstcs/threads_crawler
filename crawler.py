@@ -7,7 +7,20 @@ import re
 import argparse
 import asyncio
 import random
+import logging
 from playwright.async_api import async_playwright
+
+# Setup logging configuration
+os.makedirs("logs", exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout),
+        logging.FileHandler("logs/scraper.log", encoding="utf-8")
+    ]
+)
+logger = logging.getLogger("threads_scraper")
 
 # Default search themes
 DEFAULT_THEMES = ["AI", "台股", "旅遊", "美食"]
@@ -53,7 +66,7 @@ def parse_time_str(time_str):
                     dt = datetime.datetime(year, month, day)
                 return int(dt.timestamp())
         except Exception as e:
-            print(f"[Warning] Failed to parse absolute date '{time_str}': {e}")
+            logger.warning(f"Failed to parse absolute date '{time_str}': {e}")
             return now
 
     try:
@@ -86,179 +99,191 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
     Scrapes threads.com/search?q={theme_query} and returns a list of post dictionaries.
     """
     url = f"https://www.threads.com/search?q={theme_query}"
-    print(f"\n[Scraper] Navigating to: {url}")
+    max_retries = 3
     
-    posts = []
-    try:
-        # Navigate and wait until network is stable
-        await page.goto(url, wait_until="networkidle", timeout=25000)
-        
-        # Let's wait a bit to settle
-        await page.wait_for_timeout(3000)
-        
-        # Try to remove the login modal if any
+    for attempt in range(1, max_retries + 1):
+        logger.info(f"Navigating to search page: {url} (Theme: {theme_name}, Attempt: {attempt}/{max_retries})")
+        posts = []
         try:
-            await page.evaluate("""() => {
-                let dialogs = document.querySelectorAll('div[role="dialog"]');
-                dialogs.forEach(el => el.remove());
+            # Navigate and wait until network is stable
+            await page.goto(url, wait_until="networkidle", timeout=25000)
+            
+            # Let's wait a bit to settle
+            await page.wait_for_timeout(3000)
+            
+            # Try to remove the login modal if any
+            try:
+                await page.evaluate("""() => {
+                    let dialogs = document.querySelectorAll('div[role="dialog"]');
+                    dialogs.forEach(el => el.remove());
+                    
+                    document.body.style.overflow = 'auto';
+                    document.body.style.setProperty('overflow', 'auto', 'important');
+                }""")
+            except Exception as modal_err:
+                logger.warning(f"Failed to cleanup modal overlays: {modal_err}")
+
+            # Scroll to load more posts
+            for i in range(scrolls):
+                logger.info(f"Scrolling... ({i+1}/{scrolls})")
+                await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                scroll_delay = random.uniform(1.5, 3.2)
+                time.sleep(scroll_delay)
+
+            # Run JS to extract post details using the class-independent selector algorithm
+            extracted_data = await page.evaluate(r"""() => {
+                let postLinks = Array.from(document.querySelectorAll('a[href*="/post/"]'));
+                let uniqueHrefs = [];
+                let uniqueLinks = [];
                 
-                document.body.style.overflow = 'auto';
-                document.body.style.setProperty('overflow', 'auto', 'important');
-            }""")
-        except Exception as modal_err:
-            print(f"[Warning] Failed to cleanup modal overlays: {modal_err}")
-
-        # Scroll to load more posts
-        for i in range(scrolls):
-            print(f"[Scraper] Scrolling... ({i+1}/{scrolls})")
-            await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-            scroll_delay = random.uniform(1.5, 3.2)
-            time.sleep(scroll_delay)
-
-
-
-        # Run JS to extract post details using the class-independent selector algorithm
-        extracted_data = await page.evaluate(r"""() => {
-            let postLinks = Array.from(document.querySelectorAll('a[href*="/post/"]'));
-            let uniqueHrefs = [];
-            let uniqueLinks = [];
-            
-            postLinks.forEach(link => {
-                let href = link.getAttribute('href');
-                if (href && !uniqueHrefs.includes(href)) {
-                    uniqueHrefs.push(href);
-                    uniqueLinks.push(link);
-                }
-            });
-            
-            let results = [];
-            
-            uniqueLinks.forEach(link => {
-                let href = link.getAttribute('href');
-                let postIdMatch = href.match(/\/post\/([A-Za-z0-9_\-]+)/);
-                if (!postIdMatch) return;
-                let postId = postIdMatch[1];
-                
-                // Class-independent container detection
-                let postContainer = link;
-                while (postContainer.parentElement) {
-                    let parent = postContainer.parentElement;
-                    let otherPostLinks = Array.from(parent.querySelectorAll('a[href*="/post/"]'));
-                    let hasOtherPosts = otherPostLinks.some(l => {
-                        let h = l.getAttribute('href');
-                        return h && !h.includes('/post/' + postId);
-                    });
-                    if (hasOtherPosts) {
-                        break;
+                postLinks.forEach(link => {
+                    let href = link.getAttribute('href');
+                    if (href && !uniqueHrefs.includes(href)) {
+                        uniqueHrefs.push(href);
+                        uniqueLinks.push(link);
                     }
-                    postContainer = parent;
-                }
-                
-                if (!postContainer) return;
-                
-                // Extract Username and User Link
-                let allLinks = Array.from(postContainer.querySelectorAll('a'));
-                let userLink = allLinks.find(l => {
-                    let h = l.getAttribute('href');
-                    return h && h.includes('/@') && !h.includes('/post/');
                 });
                 
-                let username = 'unknown';
-                let user_url = '';
-                if (userLink) {
-                    let href = userLink.getAttribute('href');
-                    username = href.replace('/', '').replace('@', '');
-                    user_url = 'https://www.threads.com' + href;
-                } else {
-                    let match = href.match(/\/@([^/]+)\/post\//);
-                    if (match) {
-                        username = match[1];
-                        user_url = 'https://www.threads.com/@' + username;
-                    }
-                }
+                let results = [];
                 
-                // Extract Post Text (longest dir="auto" span)
-                let spans = Array.from(postContainer.querySelectorAll('span[dir="auto"]'));
-                let post_text = '';
-                spans.forEach(span => {
-                    let text = span.textContent.trim();
-                    if (text && text !== username && !text.includes('翻譯') && !text.includes('翻譯年糕') && !/^\d+\s*(讚|回覆|likes|replies|reposts|shares|個讚|則回覆)/i.test(text)) {
-                        if (text.length > post_text.length) {
-                            post_text = text;
+                uniqueLinks.forEach(link => {
+                    let href = link.getAttribute('href');
+                    let postIdMatch = href.match(/\/post\/([A-Za-z0-9_\-]+)/);
+                    if (!postIdMatch) return;
+                    let postId = postIdMatch[1];
+                    
+                    // Class-independent container detection
+                    let postContainer = link;
+                    while (postContainer.parentElement) {
+                        let parent = postContainer.parentElement;
+                        let otherPostLinks = Array.from(parent.querySelectorAll('a[href*="/post/"]'));
+                        let hasOtherPosts = otherPostLinks.some(l => {
+                            let h = l.getAttribute('href');
+                            return h && !h.includes('/post/' + postId);
+                        });
+                        if (hasOtherPosts) {
+                            break;
                         }
-                    }
-                });
-                
-                // Extract Likes and Replies counts
-                let likes = 0;
-                let replies = 0;
-                let article_text = postContainer.textContent || '';
-                
-                function parseCount(txt, type) {
-                    let regexes = [];
-                    if (type === 'likes') {
-                        regexes = [
-                            /Like\s*([\d\.]+K?)/i,
-                            /([\d\.]+K?)\s*(likes|讚|個讚)/i
-                        ];
-                    } else {
-                        regexes = [
-                            /Comment\s*([\d\.]+K?)/i,
-                            /([\d\.]+K?)\s*(replies|回覆|則回覆|個回覆)/i
-                        ];
+                        postContainer = parent;
                     }
                     
-                    for (let r of regexes) {
-                        let m = txt.match(r);
-                        if (m) {
-                            let valStr = m[1].toUpperCase();
-                            if (valStr.includes('K')) {
-                                return Math.round(parseFloat(valStr.replace('K', '')) * 1000);
-                            }
-                            return parseInt(valStr) || 0;
+                    if (!postContainer) return;
+                    
+                    // Extract Username and User Link
+                    let allLinks = Array.from(postContainer.querySelectorAll('a'));
+                    let userLink = allLinks.find(l => {
+                        let h = l.getAttribute('href');
+                        return h && h.includes('/@') && !h.includes('/post/');
+                    });
+                    
+                    let username = 'unknown';
+                    let user_url = '';
+                    if (userLink) {
+                        let href = userLink.getAttribute('href');
+                        username = href.replace('/', '').replace('@', '');
+                        user_url = 'https://www.threads.com' + href;
+                    } else {
+                        let match = href.match(/\/@([^/]+)\/post\//);
+                        if (match) {
+                            username = match[1];
+                            user_url = 'https://www.threads.com/@' + username;
                         }
                     }
-                    return 0;
-                }
-                
-                likes = parseCount(article_text, 'likes');
-                replies = parseCount(article_text, 'replies');
-                
-                results.push({
-                    id: postId,
-                    username: username,
-                    user_url: user_url,
-                    text: post_text || '無內文',
-                    url: 'https://www.threads.com' + href,
-                    likes: likes,
-                    replies: replies,
-                    time_str: link.textContent.trim()
+                    
+                    // Extract Post Text (longest dir="auto" span)
+                    let spans = Array.from(postContainer.querySelectorAll('span[dir="auto"]'));
+                    let post_text = '';
+                    spans.forEach(span => {
+                        let text = span.textContent.trim();
+                        if (text && text !== username && !text.includes('翻譯') && !text.includes('翻譯年糕') && !/^\d+\s*(讚|回覆|likes|replies|reposts|shares|個讚|則回覆)/i.test(text)) {
+                            if (text.length > post_text.length) {
+                                post_text = text;
+                            }
+                        }
+                    });
+                    
+                    // Extract Likes and Replies counts
+                    let likes = 0;
+                    let replies = 0;
+                    let article_text = postContainer.textContent || '';
+                    
+                    function parseCount(txt, type) {
+                        let regexes = [];
+                        if (type === 'likes') {
+                            regexes = [
+                                /Like\s*([\d\.]+K?)/i,
+                                /([\d\.]+K?)\s*(likes|讚|個讚)/i
+                            ];
+                        } else {
+                            regexes = [
+                                /Comment\s*([\d\.]+K?)/i,
+                                /([\d\.]+K?)\s*(replies|回覆|則回覆|個回覆)/i
+                            ];
+                        }
+                        
+                        for (let r of regexes) {
+                            let m = txt.match(r);
+                            if (m) {
+                                let valStr = m[1].toUpperCase();
+                                if (valStr.includes('K')) {
+                                    return Math.round(parseFloat(valStr.replace('K', '')) * 1000);
+                                }
+                                return parseInt(valStr) || 0;
+                            }
+                        }
+                        return 0;
+                    }
+                    
+                    likes = parseCount(article_text, 'likes');
+                    replies = parseCount(article_text, 'replies');
+                    
+                    results.push({
+                        id: postId,
+                        username: username,
+                        user_url: user_url,
+                        text: post_text || '無內文',
+                        url: 'https://www.threads.com' + href,
+                        likes: likes,
+                        replies: replies,
+                        time_str: link.textContent.trim()
+                    });
                 });
-            });
-            return results;
-        }""")
-        
-        # Convert extracted times and add additional metadata in Python
-        for item in extracted_data:
-            post_time = parse_time_str(item["time_str"])
-            posts.append({
-                "id": item["id"],
-                "username": item["username"],
-                "user_url": item["user_url"],
-                "text": item["text"],
-                "url": item["url"],
-                "likes": item["likes"],
-                "replies": item["replies"],
-                "time": post_time,
-                "time_str": item["time_str"],
-                "theme": theme_name,
-                "last_seen": int(time.time())
-            })
+                return results;
+            }""")
             
-    except Exception as e:
-        print(f"[Error] Error scraping theme {theme_name}: {e}")
-        
-    return posts
+            # Convert extracted times and add additional metadata in Python
+            for item in extracted_data:
+                post_time = parse_time_str(item["time_str"])
+                posts.append({
+                    "id": item["id"],
+                    "username": item["username"],
+                    "user_url": item["user_url"],
+                    "text": item["text"],
+                    "url": item["url"],
+                    "likes": item["likes"],
+                    "replies": item["replies"],
+                    "time": post_time,
+                    "time_str": item["time_str"],
+                    "theme": theme_name,
+                    "last_seen": int(time.time())
+                })
+                
+            if not posts:
+                raise ValueError("No posts extracted from search results (empty page response)")
+                
+            logger.info(f"Successfully scraped {len(posts)} posts for theme: {theme_name}")
+            return posts
+            
+        except Exception as e:
+            logger.error(f"Error scraping theme {theme_name} on attempt {attempt}: {e}")
+            if attempt < max_retries:
+                sleep_time = 2 * attempt
+                logger.info(f"Retrying in {sleep_time} seconds (exponential backoff)...")
+                await asyncio.sleep(sleep_time)
+            else:
+                logger.error(f"All {max_retries} attempts failed to scrape theme {theme_name}.")
+                
+    return []
 
 def load_config():
     # Default is list of dicts mapping name to query
@@ -287,9 +312,9 @@ def load_config():
                         scrolls = cfg["scrolls"]
                     if "only_today" in cfg and isinstance(cfg["only_today"], bool):
                         only_today = cfg["only_today"]
-            print(f"Loaded configuration from config.json: themes={themes}, scrolls={scrolls}, only_today={only_today}")
+            logger.info(f"Loaded configuration from config.json: themes={themes}, scrolls={scrolls}, only_today={only_today}")
         except Exception as e:
-            print(f"[Warning] Failed to read config.json: {e}")
+            logger.warning(f"Failed to read config.json: {e}")
     return themes, scrolls, only_today
 
 async def main_async(args):
@@ -308,13 +333,13 @@ async def main_async(args):
                     key = item.get("id") or item.get("url")
                     if key:
                         existing_posts[key] = item
-            print(f"Loaded {len(existing_posts)} existing posts from database.")
+            logger.info(f"Loaded {len(existing_posts)} existing posts from database.")
         except Exception as e:
-            print(f"Failed to load data.json: {e}")
+            logger.error(f"Failed to load data.json: {e}")
 
     # Set up themes
     themes = args.themes_list
-    print(f"Starting crawler for themes: {themes}")
+    logger.info(f"Starting crawler for themes: {themes}")
 
     # Calculate today's start timestamp in Taipei (UTC+8)
     only_today = getattr(args, "only_today_val", False)
@@ -324,66 +349,73 @@ async def main_async(args):
         now_local = datetime.datetime.now(tz)
         today_start_local = datetime.datetime(now_local.year, now_local.month, now_local.day, tzinfo=tz)
         today_start_timestamp = int(today_start_local.timestamp())
-        print(f"[Scraper] Filter enabled: Only keeping posts published today (since {today_start_local}, timestamp: {today_start_timestamp})")
+        logger.info(f"Filter enabled: Only keeping posts published today (since {today_start_local}, timestamp: {today_start_timestamp})")
 
     new_posts_count = 0
     updated_posts_count = 0
 
-    async with async_playwright() as p:
-        print("Launching headless Chromium...")
-        # Add arguments to make it run smoothly in docker/actions
-        browser = await p.chromium.launch(
-            headless=True,
-            args=[
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--disable-web-security"
-            ]
-        )
-        context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-            locale="zh-TW",
-            timezone_id="Asia/Taipei",
-            viewport={"width": 1920, "height": 1080}
-        )
-        
-        page = await context.new_page()
-        
-        # Navigate directly to search pages to avoid setting cookies that trigger the login wall
+    browser = None
+    try:
+        async with async_playwright() as p:
+            logger.info("Launching headless Chromium...")
+            # Add arguments to make it run smoothly in docker/actions
+            browser = await p.chromium.launch(
+                headless=True,
+                args=[
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-web-security"
+                ]
+            )
+            context = await browser.new_context(
+                user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+                locale="zh-TW",
+                timezone_id="Asia/Taipei",
+                viewport={"width": 1920, "height": 1080}
+            )
+            
+            page = await context.new_page()
+            
+            # Navigate directly to search pages to avoid setting cookies that trigger the login wall
 
-        for theme_cfg in themes:
-            theme_name = theme_cfg["name"]
-            theme_query = theme_cfg["query"]
-            theme_posts = await scrape_theme(page, theme_name, theme_query, scrolls=args.scrolls_val)
-            print(f"Successfully scraped {len(theme_posts)} posts for theme: {theme_name}")
-            
-            # Merge with existing posts
-            for post in theme_posts:
-                if only_today and post.get("time", 0) < today_start_timestamp:
-                    continue
-                key = post.get("id") or post.get("url")
-                if not key:
-                    continue
-                if key in existing_posts:
-                    # Update metrics and last_seen
-                    existing_posts[key]["likes"] = post.get("likes", 0)
-                    existing_posts[key]["replies"] = post.get("replies", 0)
-                    existing_posts[key]["last_seen"] = post.get("last_seen", int(time.time()))
-                    # Retain first_seen
-                    updated_posts_count += 1
-                else:
-                    # New post
-                    post["first_seen"] = post.get("time", int(time.time()))
-                    existing_posts[key] = post
-                    new_posts_count += 1
-            
-            # Sleep between themes to avoid blocking
-            delay = 3.0
-            print(f"Waiting {delay} seconds before next theme...")
-            await page.wait_for_timeout(int(delay * 1000))
-            
-        await browser.close()
+            for theme_cfg in themes:
+                theme_name = theme_cfg["name"]
+                theme_query = theme_cfg["query"]
+                theme_posts = await scrape_theme(page, theme_name, theme_query, scrolls=args.scrolls_val)
+                logger.info(f"Successfully scraped {len(theme_posts)} posts for theme: {theme_name}")
+                
+                # Merge with existing posts
+                for post in theme_posts:
+                    if only_today and post.get("time", 0) < today_start_timestamp:
+                        continue
+                    key = post.get("id") or post.get("url")
+                    if not key:
+                        continue
+                    if key in existing_posts:
+                        # Update metrics and last_seen
+                        existing_posts[key]["likes"] = post.get("likes", 0)
+                        existing_posts[key]["replies"] = post.get("replies", 0)
+                        existing_posts[key]["last_seen"] = post.get("last_seen", int(time.time()))
+                        # Retain first_seen
+                        updated_posts_count += 1
+                    else:
+                        # New post
+                        post["first_seen"] = post.get("time", int(time.time()))
+                        existing_posts[key] = post
+                        new_posts_count += 1
+                
+                # Sleep between themes to avoid blocking
+                delay = 3.0
+                logger.info(f"Waiting {delay} seconds before next theme...")
+                await page.wait_for_timeout(int(delay * 1000))
+    except Exception as e:
+        logger.error(f"Fatal error during crawler execution: {e}")
+        raise e
+    finally:
+        if browser:
+            logger.info("Closing Playwright browser context gracefully...")
+            await browser.close()
 
     # Automatically clean up posts older than 96 hours (today 24h + preceding 72h = 345600 seconds) of publication age
     now = int(time.time())
@@ -395,7 +427,7 @@ async def main_async(args):
             
     removed_count = len(existing_posts) - len(filtered_posts)
     if removed_count > 0:
-        print(f"Cleaned up {removed_count} posts older than 96 hours.")
+        logger.info(f"Cleaned up {removed_count} posts older than 96 hours.")
         
     output_list = list(filtered_posts.values())
     
@@ -412,10 +444,10 @@ async def main_async(args):
         json.dump(output_list, f, indent=2, ensure_ascii=False)
         f.write(";\n")
 
-    print(f"\n[Scraper Completed]")
-    print(f"New posts added: {new_posts_count}")
-    print(f"Existing posts updated: {updated_posts_count}")
-    print(f"Total active posts in database: {len(output_list)}")
+    logger.info("Scraper completed successfully.")
+    logger.info(f"New posts added: {new_posts_count}")
+    logger.info(f"Existing posts updated: {updated_posts_count}")
+    logger.info(f"Total active posts in database: {len(output_list)}")
 
 def main():
     parser = argparse.ArgumentParser(description="Threads public opinion scraper")
