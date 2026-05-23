@@ -574,20 +574,23 @@ function updateCharts(filteredPosts) {
   
   // Theme Volume (Post Counts)
   const volumeData = uniqueThemes.map(theme => {
-    return filteredPosts.filter(p => p.theme === theme).length;
+    return filteredPosts.filter(p => {
+      // Clean up string comparison for theme
+      return String(p.theme).trim() === String(theme).trim();
+    }).length;
   });
 
   // Theme Engagement (Averages)
   const engagementLabels = uniqueThemes;
   const avgLikesData = uniqueThemes.map(theme => {
-    const themePosts = filteredPosts.filter(p => p.theme === theme);
+    const themePosts = filteredPosts.filter(p => String(p.theme).trim() === String(theme).trim());
     if (themePosts.length === 0) return 0;
     const totalLikes = themePosts.reduce((sum, p) => sum + (p.likes || 0), 0);
     return Math.round(totalLikes / themePosts.length * 10) / 10;
   });
 
   const avgRepliesData = uniqueThemes.map(theme => {
-    const themePosts = filteredPosts.filter(p => p.theme === theme);
+    const themePosts = filteredPosts.filter(p => String(p.theme).trim() === String(theme).trim());
     if (themePosts.length === 0) return 0;
     const totalReplies = themePosts.reduce((sum, p) => sum + (p.replies || 0), 0);
     return Math.round(totalReplies / themePosts.length * 10) / 10;
@@ -723,28 +726,39 @@ function updateCharts(filteredPosts) {
       hourlyTrendChart.destroy();
     }
 
-    // Generate labels for the last 24 hours (e.g. 17:00, 18:00...)
+    // Determine the anchor timestamp (latest post timestamp in dataset, or fallback to current time)
+    let anchorTime = Math.floor(Date.now() / 1000);
+    let latestPostTime = 0;
+    filteredPosts.forEach(p => {
+      if (p.time && p.time > latestPostTime) {
+        latestPostTime = p.time;
+      }
+    });
+    if (latestPostTime > 0) {
+      anchorTime = latestPostTime;
+    }
+
+    // Generate labels for the last 24 hours relative to anchorTime (e.g. 17:00, 18:00...)
     const labels = [];
-    const now = new Date();
+    const anchorDate = new Date(anchorTime * 1000);
     for (let i = 23; i >= 0; i--) {
-      const d = new Date(now.getTime() - i * 3600 * 1000);
+      const d = new Date(anchorDate.getTime() - i * 3600 * 1000);
       const hoursStr = String(d.getHours()).padStart(2, '0');
       labels.push(`${hoursStr}:00`);
     }
 
     // Aggregate post counts per theme into 1-hour interval bins
-    const nowSec = Math.floor(Date.now() / 1000);
     const lineDatasets = uniqueThemes.map(theme => {
       const counts = [];
       const themeColor = getThemeColor(theme);
       
       for (let i = 23; i >= 0; i--) {
-        const binStart = nowSec - (i + 1) * 3600;
-        const binEnd = nowSec - i * 3600;
+        const binStart = anchorTime - (i + 1) * 3600;
+        const binEnd = anchorTime - i * 3600;
         
         // Count posts published in this hour block for this theme
         const count = filteredPosts.filter(p => {
-          return p.theme === theme && p.time >= binStart && p.time < binEnd;
+          return String(p.theme).trim() === String(theme).trim() && p.time >= binStart && p.time < binEnd;
         }).length;
         
         counts.push(count);
@@ -813,6 +827,134 @@ function updateCharts(filteredPosts) {
       }
     });
   }
+
+  // Render the Hourly Crawled List Table
+  renderHourlyCrawlList(filteredPosts);
+}
+
+/**
+ * Render the Hourly Crawled List Table and bind details selection
+ */
+function renderHourlyCrawlList(filteredPosts) {
+  const tableHeader = document.getElementById('hourly-table-header');
+  const tableBody = document.getElementById('hourly-table-body');
+  const detailContainer = document.getElementById('hourly-detail-container');
+  const detailTitle = document.getElementById('hourly-detail-title');
+  const detailList = document.getElementById('hourly-detail-list');
+  const detailClose = document.getElementById('hourly-detail-close');
+  
+  if (!tableHeader || !tableBody) return;
+  
+  // Close details initially or on request
+  if (detailClose) {
+    detailClose.onclick = () => {
+      detailContainer.classList.add('hidden');
+    };
+  }
+
+  // Get active themes from unique themes
+  const uniqueThemes = getUniqueThemes();
+  
+  // Create headers: "時段" + each theme
+  let headerHtml = '<th>時段</th>';
+  uniqueThemes.forEach(theme => {
+    headerHtml += `<th>${escapeHTML(theme)}</th>`;
+  });
+  tableHeader.innerHTML = headerHtml;
+
+  // Determine the anchor timestamp (latest post timestamp, or fallback to current time)
+  let anchorTime = Math.floor(Date.now() / 1000);
+  let latestPostTime = 0;
+  filteredPosts.forEach(p => {
+    if (p.time && p.time > latestPostTime) {
+      latestPostTime = p.time;
+    }
+  });
+  if (latestPostTime > 0) {
+    anchorTime = latestPostTime;
+  }
+
+  // Generate rows for the last 24 hours
+  let bodyHtml = '';
+  const rowsData = []; // Store cell data for click handlers
+
+  for (let i = 0; i < 24; i++) {
+    // Current hour block definition
+    const binStart = anchorTime - (i + 1) * 3600;
+    const binEnd = anchorTime - i * 3600;
+
+    // Row label (hour range, e.g. "18:00 - 19:00" in local time)
+    const startDate = new Date(binStart * 1000);
+    const endDate = new Date(binEnd * 1000);
+    const timeLabel = `${String(startDate.getHours()).padStart(2, '0')}:00 - ${String(endDate.getHours()).padStart(2, '0')}:00`;
+
+    bodyHtml += `<tr><td>${timeLabel}</td>`;
+
+    uniqueThemes.forEach((theme, themeIdx) => {
+      // Find posts in this hour block for this theme
+      const cellPosts = filteredPosts.filter(p => {
+        return String(p.theme).trim() === String(theme).trim() && p.time >= binStart && p.time < binEnd;
+      });
+
+      const cellId = `cell-${i}-${themeIdx}`;
+      rowsData.push({
+        id: cellId,
+        theme: theme,
+        timeLabel: timeLabel,
+        posts: cellPosts
+      });
+
+      if (cellPosts.length > 0) {
+        bodyHtml += `<td><span class="hourly-cell-clickable" id="${cellId}">${cellPosts.length} 篇</span></td>`;
+      } else {
+        bodyHtml += `<td class="hourly-cell-empty">-</td>`;
+      }
+    });
+
+    bodyHtml += `</tr>`;
+  }
+  
+  tableBody.innerHTML = bodyHtml;
+
+  // Bind click handlers to clickable cells
+  rowsData.forEach(cell => {
+    const el = document.getElementById(cell.id);
+    if (!el) return;
+
+    el.onclick = () => {
+      // Show details
+      detailContainer.classList.remove('hidden');
+      detailTitle.innerHTML = `<i class="fa-solid fa-clock"></i> ${cell.timeLabel} 時段 [${escapeHTML(cell.theme)}] 爬取文章 (${cell.posts.length} 篇)`;
+
+      // Render posts
+      let detailHtml = '';
+      cell.posts.forEach(post => {
+        const relativeTime = getRelativeTimeStr(post.time);
+        detailHtml += `
+          <div class="hourly-post-item">
+            <div class="hourly-post-item-header">
+              <a href="${post.user_url || '#'}" target="_blank" class="hourly-post-item-author">@${escapeHTML(post.username || 'anonymous')}</a>
+              <span>${relativeTime}</span>
+            </div>
+            <div class="hourly-post-item-text">${escapeHTML(post.text)}</div>
+            <div class="hourly-post-item-footer">
+              <div class="hourly-post-item-metrics">
+                <span><i class="fa-solid fa-heart"></i> ${formatCount(post.likes || 0)}</span>
+                <span><i class="fa-solid fa-comment"></i> ${formatCount(post.replies || 0)}</span>
+              </div>
+              <a href="${post.url || '#'}" target="_blank" class="hourly-post-item-link">
+                閱讀對話 <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+            </div>
+          </div>
+        `;
+      });
+      detailList.innerHTML = detailHtml;
+
+      // Scroll into view
+      detailContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+  });
 }
 
 

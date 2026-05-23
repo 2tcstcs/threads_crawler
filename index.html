@@ -101,6 +101,38 @@
           <canvas id="hourlyTrendChart"></canvas>
         </div>
       </div>
+      <!-- Hourly Crawled List Card -->
+      <div class="chart-card glass full-width-chart" id="hourly-list-card">
+        <h3><i class="fa-solid fa-clock-rotate-left"></i> 每小時各主題爬取清單 (過去 24 小時)</h3>
+        <p class="section-desc" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+          點擊下方表格中有數據的連結，可在表格下方展開檢視該時段內抓取到的詳細文章內容。
+        </p>
+        <div class="hourly-table-wrapper" style="overflow-x: auto; max-height: 350px;">
+          <table class="hourly-summary-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr id="hourly-table-header">
+                <!-- Dynamically generated headers: 時段 | 主題1 | 主題2 ... -->
+              </tr>
+            </thead>
+            <tbody id="hourly-table-body">
+              <!-- Dynamically generated rows -->
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Detailed posts container for clicked cell -->
+        <div id="hourly-detail-container" class="hidden" style="margin-top: 16px; padding: 16px; border-top: 1px solid var(--border-color); background: var(--bg-app); border-radius: var(--radius-sm);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;">
+            <h4 id="hourly-detail-title" style="font-size: 0.9rem; font-weight: 600; margin: 0; color: var(--google-blue);">
+              點擊上方儲存格以檢視文章
+            </h4>
+            <button id="hourly-detail-close" class="reset-btn-link" style="font-size: 0.8rem; cursor: pointer;">關閉檢視</button>
+          </div>
+          <div id="hourly-detail-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+            <!-- Post items will be dynamically inserted here -->
+          </div>
+        </div>
+      </div>
     </section>
 
 

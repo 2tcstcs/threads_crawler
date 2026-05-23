@@ -3,5 +3,6 @@
     "銀行": "銀行",
     "詐騙": "詐騙"
   },
-  "scrolls": 2
+  "scrolls": 2,
+  "only_today": true
 }
