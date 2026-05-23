@@ -10,7 +10,7 @@ window.crawledData = [
     "time": 1779454826,
     "time_str": "1天",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1779454826
   },
   {
@@ -192,7 +192,7 @@ window.crawledData = [
     "time": 1778630400,
     "time_str": "2026-5-13",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1778630400
   },
   {
@@ -234,7 +234,7 @@ window.crawledData = [
     "time": 1778371200,
     "time_str": "2026-5-10",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1778371200
   },
   {
@@ -500,7 +500,7 @@ window.crawledData = [
     "time": 1772668800,
     "time_str": "2026-3-5",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1772668800
   },
   {
@@ -556,7 +556,7 @@ window.crawledData = [
     "time": 1767398400,
     "time_str": "2026-1-3",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1767398400
   },
   {
@@ -570,7 +570,7 @@ window.crawledData = [
     "time": 1766361600,
     "time_str": "2025-12-22",
     "theme": "詐騙",
-    "last_seen": 1779541243,
+    "last_seen": 1779542561,
     "first_seen": 1766361600
   },
   {
@@ -696,7 +696,7 @@ window.crawledData = [
     "time": 1759968000,
     "time_str": "2025-10-9",
     "theme": "詐騙",
-    "last_seen": 1779541243,
+    "last_seen": 1779542561,
     "first_seen": 1759968000
   },
   {
@@ -710,7 +710,7 @@ window.crawledData = [
     "time": 1759276800,
     "time_str": "2025-10-1",
     "theme": "詐騙",
-    "last_seen": 1779541243,
+    "last_seen": 1779542561,
     "first_seen": 1759276800
   },
   {
@@ -752,7 +752,7 @@ window.crawledData = [
     "time": 1755648000,
     "time_str": "2025-8-20",
     "theme": "詐騙",
-    "last_seen": 1779541243,
+    "last_seen": 1779542561,
     "first_seen": 1755648000
   },
   {
@@ -808,7 +808,7 @@ window.crawledData = [
     "time": 1752710400,
     "time_str": "2025-7-17",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1752710400
   },
   {
@@ -850,7 +850,7 @@ window.crawledData = [
     "time": 1751587200,
     "time_str": "2025-7-4",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1751587200
   },
   {
@@ -1032,7 +1032,7 @@ window.crawledData = [
     "time": 1725494400,
     "time_str": "2024-9-5",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1725494400
   },
   {
@@ -1046,7 +1046,7 @@ window.crawledData = [
     "time": 1725494400,
     "time_str": "2024-9-5",
     "theme": "銀行",
-    "last_seen": 1779541226,
+    "last_seen": 1779542544,
     "first_seen": 1725494400
   },
   {
@@ -1116,7 +1116,7 @@ window.crawledData = [
     "time": 1713052800,
     "time_str": "2024-4-14",
     "theme": "詐騙",
-    "last_seen": 1779541243,
+    "last_seen": 1779542561,
     "first_seen": 1713052800
   },
   {
