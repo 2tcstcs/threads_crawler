@@ -275,13 +275,12 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
             return posts
             
         except Exception as e:
-            logger.error(f"Error scraping theme {theme_name} on attempt {attempt}: {e}")
             if attempt < max_retries:
-                sleep_time = 2 * attempt
-                logger.info(f"Retrying in {sleep_time} seconds (exponential backoff)...")
+                sleep_time = (2 ** attempt) + random.uniform(1, 3)
+                logger.info(f"[Retry System] Attempt {attempt}/3 failed for theme {theme_name}. Retrying in {sleep_time:.2f} seconds...")
                 await asyncio.sleep(sleep_time)
             else:
-                logger.error(f"All {max_retries} attempts failed to scrape theme {theme_name}.")
+                logger.error(f"All {max_retries} attempts failed to scrape theme {theme_name}: {e}")
                 
     return []
 

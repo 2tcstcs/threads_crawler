@@ -1,74 +1,86 @@
-/* Google Material Design 3 Styling System for Threads Watch Dashboard */
+/* Apple Minimalist Design System for Threads Watch Dashboard */
 
 :root {
-  /* Google HSL Color Palette */
-  --google-blue: #1a73e8;
-  --google-blue-hover: #1557b0;
-  --google-blue-light: rgba(26, 115, 232, 0.08);
-  --google-blue-border: rgba(26, 115, 232, 0.24);
+  /* Apple Hex Color Palette */
+  --apple-blue: #0066cc;
+  --apple-blue-hover: #0051a8;
+  --apple-blue-light: rgba(0, 102, 204, 0.05);
+  --apple-blue-border: rgba(0, 102, 204, 0.15);
 
-  /* Google Brand Colors for Themes */
-  --theme-0: #1a73e8; /* Google Blue */
-  --theme-1: #1e8e3e; /* Google Green */
-  --theme-2: #f9ab00; /* Google Yellow */
-  --theme-3: #d93025; /* Google Red */
-  --theme-fallback: #5f6368; /* Google Gray */
+  /* Google Variable Aliases for styling compatibility */
+  --google-blue: var(--apple-blue);
+  --google-blue-hover: var(--apple-blue-hover);
+  --google-blue-light: var(--apple-blue-light);
+  --google-blue-border: var(--apple-blue-border);
 
-  --color-likes: #ea4335; /* Google Red for likes */
-  --color-replies: #1a73e8; /* Google Blue for replies */
+  /* Apple Brand Colors for Themes */
+  --theme-0: #0066cc; /* Apple Blue */
+  --theme-1: #34c759; /* Apple Green */
+  --theme-2: #ff9500; /* Apple Orange */
+  --theme-3: #ff3b30; /* Apple Red */
+  --theme-fallback: #8e8e93; /* Apple Gray */
+
+  --color-likes: #ff3b30; /* Apple Red for likes */
+  --color-replies: #0066cc; /* Apple Blue for replies */
 
   /* Common Parameters */
-  --radius-sm: 8px;
-  --radius-md: 16px;
+  --radius-sm: 10px; /* Apple squircle buttons */
+  --radius-md: 18px; /* Apple squircle cards */
   --radius-lg: 24px;
   
-  --transition-m3: all 0.2s cubic-bezier(0.2, 0, 0, 1);
-  --shadow-m3-1: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-  --shadow-m3-2: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+  --transition-m3: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+  --shadow-m3-1: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-m3-2: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-/* Light Theme (Google Standard) */
+/* Light Theme (Apple Standard Light) */
 html, html.light {
-  --bg-app: #f8f9fa;
+  --bg-app: #f5f5f7; /* Apple signature light background */
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
-  --bg-input: #ffffff;
-  --text-main: #202124;
-  --text-muted: #5f6368;
-  --border-color: #dadce0;
-  --border-focus: #1a73e8;
-  --skeleton-base: #f1f3f4;
-  --skeleton-highlight: #e8eaed;
-  --card-badge-bg: #f1f3f4;
-  --header-bg: #ffffff;
+  --bg-input: #f5f5f7;
+  --text-main: #1d1d1f; /* Apple deep dark gray text */
+  --text-muted: #86868b; /* Apple gray text */
+  --border-color: #d2d2d7; /* Apple fine border line */
+  --border-focus: #0066cc;
+  --skeleton-base: #e8e8ed;
+  --skeleton-highlight: #f5f5f7;
+  --card-badge-bg: #f5f5f7;
+  --header-bg: rgba(255, 255, 255, 0.8);
 }
 
-/* Dark Theme (Google Dark Mode Standard) */
+/* Dark Theme (Apple Pro Dark) */
 html.dark {
-  --bg-app: #121212;
-  --bg-card: #1f1f1f;
-  --bg-sidebar: #1f1f1f;
-  --bg-input: #2d2d2d;
-  --text-main: #e8eaed;
-  --text-muted: #9aa0a6;
-  --border-color: #3c4043;
-  --border-focus: #8ab4f8;
-  --skeleton-base: #2d2d2d;
-  --skeleton-highlight: #3c4043;
-  --card-badge-bg: #2d2d2d;
-  --header-bg: #1f1f1f;
+  --bg-app: #000000; /* Apple true black background */
+  --bg-card: #1c1c1e; /* Apple dark mode card color */
+  --bg-sidebar: #1c1c1e;
+  --bg-input: #2c2c2e;
+  --text-main: #f5f5f7;
+  --text-muted: #86868b;
+  --border-color: #38383a; /* Apple fine dark mode border line */
+  --border-focus: #2997ff;
+  --skeleton-base: #2c2c2e;
+  --skeleton-highlight: #3a3a3c;
+  --card-badge-bg: #2c2c2e;
+  --header-bg: rgba(28, 28, 30, 0.8);
   
   /* Update brand colors for dark mode readability */
-  --google-blue: #8ab4f8;
-  --google-blue-hover: #aecbfa;
-  --google-blue-light: rgba(138, 180, 248, 0.1);
-  --google-blue-border: rgba(138, 180, 248, 0.3);
+  --apple-blue: #2997ff;
+  --apple-blue-hover: #54a9ff;
+  --apple-blue-light: rgba(41, 151, 255, 0.1);
+  --apple-blue-border: rgba(41, 151, 255, 0.3);
+
+  /* Google Variable Aliases for dark mode styling compatibility */
+  --google-blue: var(--apple-blue);
+  --google-blue-hover: var(--apple-blue-hover);
+  --google-blue-light: var(--apple-blue-light);
+  --google-blue-border: var(--apple-blue-border);
   
-  --theme-0: #8ab4f8; /* Google Blue */
-  --theme-1: #81c995; /* Google Green */
-  --theme-2: #fdd663; /* Google Yellow */
-  --theme-3: #f28b82; /* Google Red */
-  --theme-fallback: #9aa0a6;
+  --theme-0: #2997ff; /* Apple Blue */
+  --theme-1: #30d158; /* Apple Green */
+  --theme-2: #ff9f0a; /* Apple Orange */
+  --theme-3: #ff453a; /* Apple Red */
+  --theme-fallback: #8e8e93;
 }
 
 /* Reset & Base Styles */
@@ -79,7 +91,7 @@ html.dark {
 }
 
 body {
-  font-family: 'Roboto', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: var(--bg-app);
   color: var(--text-main);
   min-height: 100vh;
@@ -96,19 +108,22 @@ body {
   gap: 24px;
 }
 
-/* Glassmorphism replacement -> Clean Google Card style */
+/* Glassmorphism card -> Apple Clean Card style */
 .glass {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-m3-1);
 }
 
-/* Header (Google Top App Bar) */
+/* Header (Apple Top App Bar) */
 .app-header {
   padding: 16px 24px;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-m3-1);
   background-color: var(--header-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   transition: var(--transition-m3);
 }
 
@@ -129,18 +144,20 @@ body {
 .logo-icon {
   font-size: 1.5rem;
   color: #ffffff;
-  background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+  background: #1d1d1f; /* Apple signature dark gray */
   width: 44px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 html.dark .logo-icon {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  background: #ffffff;
+  color: #1d1d1f;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
 }
 
 .logo-area h1 {

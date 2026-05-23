@@ -6,6 +6,14 @@ let hourlyTrendChart = null;
 let sentimentChart = null;
 let sentimentEngagementChart = null;
 
+const RSS_MIRRORS = [
+  "https://rsshub.moe",
+  "https://rsshub.outv.im",
+  "https://rsshub.soundoftext.app",
+  "https://rss.chgsh.co",
+  "https://rsshub.app" // Official fallback
+];
+
 // CSS Google-inspired colors matching index.css
 const THEME_COLORS = [
   '#1a73e8', // Theme 0: Google Blue
@@ -39,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6. Initial Render & Filter
   updateDashboard();
+
+  // 7. Background RSS Dynamic Rescue
+  rescueLiveTrends();
 });
 
 /**
@@ -1863,4 +1874,94 @@ function updateJsonPreview() {
   };
   
   codeBlock.textContent = JSON.stringify(configOutput, null, 2);
+}
+
+/**
+ * Shuffles mirror nodes and fetches live Threads post trends via RSS-Hub mirrors.
+ * Performs failover rotation and merges results safely into global state.
+ */
+async function fetchLiveTrends(keyword) {
+  const shuffledMirrors = [...RSS_MIRRORS].sort(() => Math.random() - 0.5);
+  
+  for (const mirror of shuffledMirrors) {
+    const url = `${mirror}/threads/search/${encodeURIComponent(keyword)}.json`;
+    console.log(`[RSS Dynamic Rescue] Attempting fetch from: ${url}`);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    try {
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const feed = await response.json();
+      if (!feed || !feed.items || !Array.isArray(feed.items)) {
+        throw new Error("Invalid JSON Feed structure");
+      }
+      
+      const mappedPosts = feed.items.map(item => {
+        const postText = item.summary || item.content_html || item.title || '無內文';
+        const pubDate = item.date_published ? new Date(item.date_published) : new Date();
+        const author = item.authors?.[0] || {};
+        
+        return {
+          id: item.id || Math.random().toString(36).substr(2, 9),
+          username: author.name || 'unknown',
+          user_url: author.url || '',
+          text: postText,
+          url: item.url || '',
+          likes: 0,
+          replies: 0,
+          time: Math.floor(pubDate.getTime() / 1000),
+          time_str: '剛剛',
+          theme: keyword,
+          last_seen: Math.floor(Date.now() / 1000),
+          first_seen: Math.floor(pubDate.getTime() / 1000),
+          sentiment: classifySentiment(postText)
+        };
+      });
+      
+      // Merge and deduplicate
+      const mergedMap = new Map();
+      allPosts.forEach(post => {
+        const key = post.id || post.url;
+        if (key) mergedMap.set(key, post);
+      });
+      
+      mappedPosts.forEach(post => {
+        const key = post.id || post.url;
+        if (key) mergedMap.set(key, post);
+      });
+      
+      allPosts = Array.from(mergedMap.values());
+      
+      console.log(`[RSS Dynamic Rescue] Successfully merged ${mappedPosts.length} posts for theme: ${keyword} from mirror: ${mirror}`);
+      
+      updateDashboard();
+      return; // Stop on first successful fetch
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn(`[RSS Dynamic Rescue] Failover: Mirror ${mirror} failed for theme ${keyword}: ${err.message}`);
+    }
+  }
+  
+  console.error(`[RSS Dynamic Rescue] All RSS mirrors failed to fetch live trends for theme: ${keyword}`);
+}
+
+/**
+ * Recovers live trends for all unique themes loaded in the dashboard.
+ */
+async function rescueLiveTrends() {
+  const uniqueThemes = getUniqueThemes();
+  for (const theme of uniqueThemes) {
+    try {
+      await fetchLiveTrends(theme);
+    } catch (err) {
+      console.error(`Failed dynamic rescue for theme ${theme}:`, err);
+    }
+  }
 }
