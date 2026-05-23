@@ -4,6 +4,7 @@ let themeVolumeChart = null;
 let themeEngagementChart = null;
 let hourlyTrendChart = null;
 let sentimentChart = null;
+let sentimentEngagementChart = null;
 
 // CSS Google-inspired colors matching index.css
 const THEME_COLORS = [
@@ -956,6 +957,85 @@ function updateCharts(filteredPosts) {
                 const percentage = Math.round((val / total) * 100);
                 return ` ${context.label}: ${val} 篇 (${percentage}%)`;
               }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Render Sentiment Engagement Chart (Side-by-side Bars)
+  const sentEngCtx = document.getElementById('sentimentEngagementChart')?.getContext('2d');
+  if (sentEngCtx) {
+    if (sentimentEngagementChart) {
+      sentimentEngagementChart.destroy();
+    }
+
+    const sentimentCategories = ['positive', 'negative', 'neutral'];
+    const avgSentimentLikesData = sentimentCategories.map(sent => {
+      const sentPosts = filteredPosts.filter(p => p.sentiment === sent);
+      if (sentPosts.length === 0) return 0;
+      const totalLikes = sentPosts.reduce((sum, p) => sum + (p.likes || 0), 0);
+      return Math.round(totalLikes / sentPosts.length * 10) / 10;
+    });
+
+    const avgSentimentRepliesData = sentimentCategories.map(sent => {
+      const sentPosts = filteredPosts.filter(p => p.sentiment === sent);
+      if (sentPosts.length === 0) return 0;
+      const totalReplies = sentPosts.reduce((sum, p) => sum + (p.replies || 0), 0);
+      return Math.round(totalReplies / sentPosts.length * 10) / 10;
+    });
+
+    sentimentEngagementChart = new Chart(sentEngCtx, {
+      type: 'bar',
+      data: {
+        labels: ['正面', '負面', '中性'],
+        datasets: [
+          {
+            label: '平均按讚數',
+            data: avgSentimentLikesData,
+            backgroundColor: '#ea4335',
+            borderRadius: 4,
+            barThickness: 16
+          },
+          {
+            label: '平均回覆數',
+            data: avgSentimentRepliesData,
+            backgroundColor: '#1a73e8',
+            borderRadius: 4,
+            barThickness: 16
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: textColor,
+              font: {
+                family: 'Roboto',
+                size: 11
+              },
+              boxWidth: 12
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: textColor,
+              font: { family: 'Roboto', size: 11, weight: '500' }
+            }
+          },
+          y: {
+            grid: { color: gridColor },
+            ticks: {
+              color: textColor,
+              font: { family: 'Roboto', size: 10 }
             }
           }
         }

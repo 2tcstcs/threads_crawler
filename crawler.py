@@ -379,18 +379,17 @@ async def main_async(args):
             
         await browser.close()
 
-    # Automatically clean up posts older than 7 days (604800 seconds)
+    # Automatically clean up posts older than 96 hours (today 24h + preceding 72h = 345600 seconds) of publication age
     now = int(time.time())
     filtered_posts = {}
     for pid, pdata in existing_posts.items():
-        # Keep if seen in the last 7 days OR posted in the last 7 days
-        # This keeps the database from growing too large
-        if now - pdata.get("last_seen", now) <= 604800:
+        # Keep only posts published within the last 96 hours (today 24 hours and preceding 72 hours)
+        if now - pdata.get("time", now) <= 345600:
             filtered_posts[pid] = pdata
             
     removed_count = len(existing_posts) - len(filtered_posts)
     if removed_count > 0:
-        print(f"Cleaned up {removed_count} posts older than 7 days.")
+        print(f"Cleaned up {removed_count} posts older than 96 hours.")
         
     output_list = list(filtered_posts.values())
     
