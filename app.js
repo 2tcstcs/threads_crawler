@@ -657,7 +657,7 @@ function renderPostCards(posts) {
     const cleanText = escapeHTML(post.text);
     
     const card = document.createElement('div');
-    card.className = `post-card ${themeClass}`;
+    card.className = `post-list-item ${themeClass}`;
 
     // Sentiment badge logic
     let sentimentClass = 'sentiment-neutral';
@@ -670,43 +670,49 @@ function renderPostCards(posts) {
       sentimentText = '負面';
     }
     
+    const postSource = post.source || 'Threads 網頁';
+    
     card.innerHTML = `
-      <div class="card-header">
-        <div class="card-user-info">
-          <div class="user-avatar">${avatarChar}</div>
-          <div class="user-details">
+      <div class="post-item-avatar-col">
+        <div class="user-avatar">${avatarChar}</div>
+      </div>
+      <div class="post-item-main-col">
+        <div class="post-item-header">
+          <div class="post-item-meta-left">
             <a href="${post.user_url || '#'}" target="_blank" rel="noopener noreferrer" class="username-link">
               @${post.username || 'anonymous'}
             </a>
+            <span class="meta-dot">·</span>
             <a href="${post.url || '#'}" target="_blank" rel="noopener noreferrer" class="post-time-link" title="檢視原文">
-              ${relativeTime} · <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.65rem;"></i>
+              ${relativeTime}
             </a>
           </div>
+          <div class="post-item-meta-right">
+            <span class="source-badge">${escapeHTML(postSource)}</span>
+            <span class="sentiment-badge ${sentimentClass}">${sentimentText}</span>
+            <span class="theme-badge ${themeClass}">${post.theme || '預設'}</span>
+          </div>
         </div>
-        <div style="display: flex; gap: 6px; align-items: center; flex-shrink: 0;">
-          <span class="sentiment-badge ${sentimentClass}">${sentimentText}</span>
-          <span class="theme-badge ${themeClass}">${post.theme || '預設'}</span>
+        
+        <div class="post-item-body">
+          <p class="post-text">${cleanText}</p>
         </div>
-      </div>
-      
-      <div class="card-body">
-        <p class="post-text">${cleanText}</p>
-      </div>
-      
-      <div class="card-footer">
-        <div class="engagement-metrics">
-          <span class="metric-item likes" title="按讚數">
-            <i class="fa-solid fa-heart"></i>
-            <span class="metric-value">${formatCount(post.likes || 0)}</span>
-          </span>
-          <span class="metric-item replies" title="回覆數">
-            <i class="fa-solid fa-comment"></i>
-            <span class="metric-value">${formatCount(post.replies || 0)}</span>
-          </span>
+        
+        <div class="post-item-footer">
+          <div class="engagement-metrics">
+            <span class="metric-item likes" title="按讚數">
+              <i class="fa-solid fa-heart"></i>
+              <span class="metric-value">${formatCount(post.likes || 0)}</span>
+            </span>
+            <span class="metric-item replies" title="回覆數">
+              <i class="fa-solid fa-comment"></i>
+              <span class="metric-value">${formatCount(post.replies || 0)}</span>
+            </span>
+          </div>
+          <a href="${post.url || '#'}" target="_blank" rel="noopener noreferrer" class="post-action-btn">
+            閱讀完整對話 <i class="fa-solid fa-chevron-right"></i>
+          </a>
         </div>
-        <a href="${post.url || '#'}" target="_blank" rel="noopener noreferrer" class="post-action-btn">
-          閱讀完整對話 <i class="fa-solid fa-chevron-right"></i>
-        </a>
       </div>
     `;
     
@@ -1538,6 +1544,12 @@ function renderHourlyCrawlList(filteredPosts) {
   // Generate rows for the last 24 hours
   let bodyHtml = '';
   const rowsData = []; // Store cell data for click handlers
+  
+  // Track total counts per theme in the past 24 hours
+  const themeTotals = {};
+  uniqueThemes.forEach(theme => {
+    themeTotals[theme] = 0;
+  });
 
   for (let i = 0; i < 24; i++) {
     // Current hour block definition
@@ -1556,6 +1568,8 @@ function renderHourlyCrawlList(filteredPosts) {
       const cellPosts = filteredPosts.filter(p => {
         return String(p.theme).trim() === String(theme).trim() && p.time >= binStart && p.time < binEnd;
       });
+
+      themeTotals[theme] += cellPosts.length;
 
       const cellId = `cell-${i}-${themeIdx}`;
       rowsData.push({
@@ -1577,24 +1591,86 @@ function renderHourlyCrawlList(filteredPosts) {
   
   tableBody.innerHTML = bodyHtml;
 
+  // Render total counts next to header title
+  const summaryCountsContainer = document.getElementById('hourly-summary-counts');
+  if (summaryCountsContainer) {
+    let summaryHtml = '';
+    uniqueThemes.forEach((theme, idx) => {
+      summaryHtml += `<span class="theme-summary-badge theme-tag-${idx % 4}">${escapeHTML(theme)}: ${themeTotals[theme]} 篇</span>`;
+    });
+    summaryCountsContainer.innerHTML = summaryHtml;
+  }
+
+  // Set up collapse toggle behavior
+  const cardElement = document.getElementById('hourly-list-card');
+  const toggleHeader = document.getElementById('hourly-card-header');
+  const toggleBtn = document.getElementById('hourly-toggle-btn');
+  const cardBody = document.getElementById('hourly-card-body');
+
+  if (toggleHeader && cardElement && cardBody) {
+    // Check if collapsed state is saved in localStorage or default to false
+    const isCollapsed = localStorage.getItem('hourly-list-collapsed') === 'true';
+    if (isCollapsed) {
+      cardElement.classList.add('collapsed');
+      cardBody.style.display = 'none';
+      if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+    } else {
+      cardElement.classList.remove('collapsed');
+      cardBody.style.display = 'block';
+      if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+    }
+
+    toggleHeader.onclick = () => {
+      const nowCollapsed = !cardElement.classList.contains('collapsed');
+      if (nowCollapsed) {
+        cardElement.classList.add('collapsed');
+        cardBody.style.display = 'none';
+        if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+        localStorage.setItem('hourly-list-collapsed', 'true');
+      } else {
+        cardElement.classList.remove('collapsed');
+        cardBody.style.display = 'block';
+        if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
+        localStorage.setItem('hourly-list-collapsed', 'false');
+      }
+    };
+  }
+
   // Bind click handlers to clickable cells
   rowsData.forEach(cell => {
     const el = document.getElementById(cell.id);
     if (!el) return;
 
-    el.onclick = () => {
+    el.onclick = (e) => {
+      e.stopPropagation(); // Avoid triggering collapse header toggle on cell click
       // Show details
       detailContainer.classList.remove('hidden');
       detailTitle.innerHTML = `<i class="fa-solid fa-clock"></i> ${cell.timeLabel} 時段 [${escapeHTML(cell.theme)}] 爬取文章 (${cell.posts.length} 篇)`;
 
       // Render posts
       let detailHtml = '';
+      
+      // Calculate unique sources for this hour's theme posts
+      const uniqueSources = Array.from(new Set(cell.posts.map(p => p.source || 'Threads 網頁')));
+      if (uniqueSources.length > 0) {
+        detailHtml += `
+          <div class="hourly-sources-summary" style="font-size: 0.8rem; padding: 8px 12px; margin-bottom: 12px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-weight:600; color: var(--text-main);"><i class="fa-solid fa-server"></i> 此時段取用來源:</span>
+            ${uniqueSources.map(src => `<span class="source-badge" style="margin: 0; background: var(--bg-app); border: 1px solid var(--border-color);">${escapeHTML(src)}</span>`).join(' ')}
+          </div>
+        `;
+      }
+
       cell.posts.forEach(post => {
         const relativeTime = getRelativeTimeStr(post.time);
+        const postSource = post.source || 'Threads 網頁';
         detailHtml += `
           <div class="hourly-post-item">
             <div class="hourly-post-item-header">
-              <a href="${post.user_url || '#'}" target="_blank" class="hourly-post-item-author">@${escapeHTML(post.username || 'anonymous')}</a>
+              <div class="hourly-post-item-author-group">
+                <a href="${post.user_url || '#'}" target="_blank" class="hourly-post-item-author">@${escapeHTML(post.username || 'anonymous')}</a>
+                <span class="source-badge" style="font-size: 0.65rem; padding: 1px 6px; margin-left: 6px;">${escapeHTML(postSource)}</span>
+              </div>
               <span>${relativeTime}</span>
             </div>
             <div class="hourly-post-item-text">${escapeHTML(post.text)}</div>
@@ -1903,10 +1979,10 @@ async function fetchLiveTrends(keyword) {
         throw new Error("Invalid JSON Feed structure");
       }
       
-      const mappedPosts = feed.items.map(item => {
-        const postText = item.summary || item.content_html || item.title || '無內文';
-        const pubDate = item.date_published ? new Date(item.date_published) : new Date();
-        const author = item.authors?.[0] || {};
+        let mirrorHost = 'RSS-Hub';
+        try {
+          mirrorHost = new URL(mirror).hostname;
+        } catch(e) {}
         
         return {
           id: item.id || Math.random().toString(36).substr(2, 9),
@@ -1921,7 +1997,8 @@ async function fetchLiveTrends(keyword) {
           theme: keyword,
           last_seen: Math.floor(Date.now() / 1000),
           first_seen: Math.floor(pubDate.getTime() / 1000),
-          sentiment: classifySentiment(postText)
+          sentiment: classifySentiment(postText),
+          source: "RSS: " + mirrorHost
         };
       });
       

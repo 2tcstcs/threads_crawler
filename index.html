@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Threads 輿情與關鍵字主題監測儀表板</title>
-  <!-- Google Fonts: Inter & Outfit -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Relying on native Apple system fonts stack (SF Pro) -->
   <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Chart.js for data visualization -->
@@ -108,22 +105,22 @@
           <canvas id="sentimentChart"></canvas>
         </div>
       </div>
-      <!-- Word Cloud Card -->
-      <div class="chart-card glass">
+      <!-- Word Cloud Card (full width) -->
+      <div class="chart-card glass full-width-chart">
         <h3><i class="fa-solid fa-cloud"></i> 熱門主題字雲 (Word Cloud)</h3>
         <div id="word-cloud-container" class="word-cloud-container">
           <!-- Dynamically generated tags cloud -->
         </div>
       </div>
-      <!-- Theme Engagement Chart Card (now full width) -->
-      <div class="chart-card glass full-width-chart">
+      <!-- Theme Engagement Chart Card (half width) -->
+      <div class="chart-card glass">
         <h3><i class="fa-solid fa-chart-column"></i> 主題社群互動分析 (讚數/回覆數)</h3>
         <div class="chart-container">
           <canvas id="themeEngagementChart"></canvas>
         </div>
       </div>
-      <!-- Sentiment Engagement Chart Card (full width) -->
-      <div class="chart-card glass full-width-chart">
+      <!-- Sentiment Engagement Chart Card (half width) -->
+      <div class="chart-card glass">
         <h3><i class="fa-solid fa-chart-column"></i> 情感傾向社群互動分析 (讚數/回覆數)</h3>
         <div class="chart-container">
           <canvas id="sentimentEngagementChart"></canvas>
@@ -135,35 +132,51 @@
           <canvas id="hourlyTrendChart"></canvas>
         </div>
       </div>
-      <!-- Hourly Crawled List Card -->
+      <!-- Hourly Crawled List Card (Collapsible) -->
       <div class="chart-card glass full-width-chart" id="hourly-list-card">
-        <h3><i class="fa-solid fa-clock-rotate-left"></i> 每小時各主題爬取清單 (過去 24 小時)</h3>
-        <p class="section-desc" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
-          點擊下方表格中有數據的連結，可在表格下方展開檢視該時段內抓取到的詳細文章內容。
-        </p>
-        <div class="hourly-table-wrapper" style="overflow-x: auto; max-height: 350px;">
-          <table class="hourly-summary-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr id="hourly-table-header">
-                <!-- Dynamically generated headers: 時段 | 主題1 | 主題2 ... -->
-              </tr>
-            </thead>
-            <tbody id="hourly-table-body">
-              <!-- Dynamically generated rows -->
-            </tbody>
-          </table>
+        <div class="card-header-toggle" id="hourly-card-header">
+          <h3>
+            <i class="fa-solid fa-clock-rotate-left"></i> 
+            每小時各主題爬取清單 (過去 24 小時)
+          </h3>
+          <div class="header-summary-and-toggle">
+            <div id="hourly-summary-counts" class="hourly-summary-counts">
+              <!-- Dynamically populated totals: e.g. AI: 25 · 台股: 14 -->
+            </div>
+            <button id="hourly-toggle-btn" class="toggle-btn" aria-label="展開或收合表格">
+              <i class="fa-solid fa-chevron-up"></i>
+            </button>
+          </div>
         </div>
         
-        <!-- Detailed posts container for clicked cell -->
-        <div id="hourly-detail-container" class="hidden" style="margin-top: 16px; padding: 16px; border-top: 1px solid var(--border-color); background: var(--bg-app); border-radius: var(--radius-sm);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;">
-            <h4 id="hourly-detail-title" style="font-size: 0.9rem; font-weight: 600; margin: 0; color: var(--google-blue);">
-              點擊上方儲存格以檢視文章
-            </h4>
-            <button id="hourly-detail-close" class="reset-btn-link" style="font-size: 0.8rem; cursor: pointer;">關閉檢視</button>
+        <div id="hourly-card-body" class="hourly-card-body">
+          <p class="section-desc" style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+            點擊下方表格中有數據的連結，可在表格下方展開檢視該時段內抓取到的詳細文章內容。
+          </p>
+          <div class="hourly-table-wrapper" style="overflow-x: auto; max-height: 350px;">
+            <table class="hourly-summary-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+              <thead>
+                <tr id="hourly-table-header">
+                  <!-- Dynamically generated headers: 時段 | 主題1 | 主題2 ... -->
+                </tr>
+              </thead>
+              <tbody id="hourly-table-body">
+                <!-- Dynamically generated rows -->
+              </tbody>
+            </table>
           </div>
-          <div id="hourly-detail-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
-            <!-- Post items will be dynamically inserted here -->
+          
+          <!-- Detailed posts container for clicked cell -->
+          <div id="hourly-detail-container" class="hidden" style="margin-top: 16px; padding: 16px; border-top: 1px solid var(--border-color); background: var(--bg-app); border-radius: var(--radius-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;">
+              <h4 id="hourly-detail-title" style="font-size: 0.9rem; font-weight: 600; margin: 0; color: var(--apple-blue);">
+                點擊上方儲存格以檢視文章
+              </h4>
+              <button id="hourly-detail-close" class="reset-btn-link" style="font-size: 0.8rem; cursor: pointer;">關閉檢視</button>
+            </div>
+            <div id="hourly-detail-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+              <!-- Post items will be dynamically inserted here -->
+            </div>
           </div>
         </div>
       </div>
@@ -267,12 +280,12 @@
           </div>
         </div>
 
-        <div class="listings-grid" id="listings-grid">
+        <div class="listings-list" id="listings-grid">
           <!-- Skeleton items display while loading -->
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
-          <div class="skeleton-card"></div>
+          <div class="skeleton-list-item"></div>
+          <div class="skeleton-list-item"></div>
+          <div class="skeleton-list-item"></div>
+          <div class="skeleton-list-item"></div>
         </div>
 
         <!-- Empty State -->

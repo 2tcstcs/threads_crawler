@@ -265,7 +265,8 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
                     "time": post_time,
                     "time_str": item["time_str"],
                     "theme": theme_name,
-                    "last_seen": int(time.time())
+                    "last_seen": int(time.time()),
+                    "source": "Threads Web"
                 })
                 
             if not posts:
@@ -329,6 +330,8 @@ async def main_async(args):
                         item["first_seen"] = item.get("time", int(time.time()))
                     if "last_seen" not in item:
                         item["last_seen"] = int(time.time())
+                    if "source" not in item:
+                        item["source"] = "Threads Web"
                     key = item.get("id") or item.get("url")
                     if key:
                         existing_posts[key] = item
