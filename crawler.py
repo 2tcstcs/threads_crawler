@@ -6,6 +6,7 @@ import time
 import re
 import argparse
 import asyncio
+import random
 from playwright.async_api import async_playwright
 
 # Default search themes
@@ -111,7 +112,8 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
         for i in range(scrolls):
             print(f"[Scraper] Scrolling... ({i+1}/{scrolls})")
             await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-            await page.wait_for_timeout(3000) # Wait 3 seconds for content to load
+            scroll_delay = random.uniform(1.5, 3.2)
+            time.sleep(scroll_delay)
 
 
 
@@ -303,7 +305,9 @@ async def main_async(args):
                         item["first_seen"] = item.get("time", int(time.time()))
                     if "last_seen" not in item:
                         item["last_seen"] = int(time.time())
-                    existing_posts[item["id"]] = item
+                    key = item.get("id") or item.get("url")
+                    if key:
+                        existing_posts[key] = item
             print(f"Loaded {len(existing_posts)} existing posts from database.")
         except Exception as e:
             print(f"Failed to load data.json: {e}")
@@ -338,10 +342,10 @@ async def main_async(args):
             ]
         )
         context = await browser.new_context(
-            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            user_agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
             locale="zh-TW",
             timezone_id="Asia/Taipei",
-            viewport={"width": 1280, "height": 800}
+            viewport={"width": 1920, "height": 1080}
         )
         
         page = await context.new_page()
@@ -358,18 +362,20 @@ async def main_async(args):
             for post in theme_posts:
                 if only_today and post.get("time", 0) < today_start_timestamp:
                     continue
-                pid = post["id"]
-                if pid in existing_posts:
+                key = post.get("id") or post.get("url")
+                if not key:
+                    continue
+                if key in existing_posts:
                     # Update metrics and last_seen
-                    existing_posts[pid]["likes"] = post["likes"]
-                    existing_posts[pid]["replies"] = post["replies"]
-                    existing_posts[pid]["last_seen"] = post["last_seen"]
+                    existing_posts[key]["likes"] = post.get("likes", 0)
+                    existing_posts[key]["replies"] = post.get("replies", 0)
+                    existing_posts[key]["last_seen"] = post.get("last_seen", int(time.time()))
                     # Retain first_seen
                     updated_posts_count += 1
                 else:
                     # New post
                     post["first_seen"] = post.get("time", int(time.time()))
-                    existing_posts[pid] = post
+                    existing_posts[key] = post
                     new_posts_count += 1
             
             # Sleep between themes to avoid blocking
