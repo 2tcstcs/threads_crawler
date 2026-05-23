@@ -216,6 +216,25 @@
           </select>
         </div>
 
+        <!-- Time Range Filter -->
+        <div class="filter-group">
+          <label for="filter-time-preset">時間範圍篩選</label>
+          <select id="filter-time-preset">
+            <option value="all">不限</option>
+            <option value="24h">過去 24 小時</option>
+            <option value="48h">過去 48 小時</option>
+            <option value="72h">過去 72 小時</option>
+            <option value="custom">自訂時間範圍</option>
+          </select>
+        </div>
+
+        <div id="custom-time-inputs" class="filter-group hidden">
+          <label for="filter-time-start">開始時間</label>
+          <input type="datetime-local" id="filter-time-start">
+          <label for="filter-time-end" style="margin-top: 8px; display: block;">結束時間</label>
+          <input type="datetime-local" id="filter-time-end">
+        </div>
+
         <!-- Sort Results -->
         <div class="filter-group">
           <label for="filter-sort">文章排序方式</label>

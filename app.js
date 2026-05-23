@@ -234,6 +234,48 @@ function setupEventListeners() {
       updateDashboard();
     });
   }
+
+  // Time Preset Filter
+  const timePresetSelect = document.getElementById('filter-time-preset');
+  const customTimeInputs = document.getElementById('custom-time-inputs');
+  if (timePresetSelect) {
+    timePresetSelect.addEventListener('change', () => {
+      if (timePresetSelect.value === 'custom') {
+        customTimeInputs?.classList.remove('hidden');
+      } else {
+        customTimeInputs?.classList.add('hidden');
+      }
+      updateDashboard();
+    });
+  }
+
+  // Custom Time Start/End Inputs
+  const timeStartInput = document.getElementById('filter-time-start');
+  const timeEndInput = document.getElementById('filter-time-end');
+
+  function validateCustomTimeInputs() {
+    if (timeStartInput && timeEndInput && timeStartInput.value && timeEndInput.value) {
+      const startMs = new Date(timeStartInput.value).getTime();
+      const endMs = new Date(timeEndInput.value).getTime();
+      if (endMs < startMs) {
+        timeEndInput.value = timeStartInput.value;
+      }
+    }
+  }
+
+  if (timeStartInput) {
+    timeStartInput.addEventListener('change', () => {
+      validateCustomTimeInputs();
+      updateDashboard();
+    });
+  }
+
+  if (timeEndInput) {
+    timeEndInput.addEventListener('change', () => {
+      validateCustomTimeInputs();
+      updateDashboard();
+    });
+  }
 }
 
 /**
@@ -251,6 +293,18 @@ function clearAllFilters() {
 
   const sentimentSelect = document.getElementById('filter-sentiment');
   if (sentimentSelect) sentimentSelect.value = 'all';
+
+  const timePresetSelect = document.getElementById('filter-time-preset');
+  if (timePresetSelect) timePresetSelect.value = 'all';
+
+  const timeStart = document.getElementById('filter-time-start');
+  if (timeStart) timeStart.value = '';
+
+  const timeEnd = document.getElementById('filter-time-end');
+  if (timeEnd) timeEnd.value = '';
+
+  const customTimeInputs = document.getElementById('custom-time-inputs');
+  if (customTimeInputs) customTimeInputs.classList.add('hidden');
 
   // Check all checkboxes
   const checkboxes = document.querySelectorAll('#theme-selector-list input[type="checkbox"]');
@@ -271,6 +325,9 @@ function getFilteredAndSortedPosts() {
   const minLikes = parseInt(document.getElementById('filter-likes-min')?.value) || 0;
   const sortVal = document.getElementById('filter-sort')?.value || 'time-desc';
   const sentimentVal = document.getElementById('filter-sentiment')?.value || 'all';
+  const timePreset = document.getElementById('filter-time-preset')?.value || 'all';
+  const timeStartVal = document.getElementById('filter-time-start')?.value || '';
+  const timeEndVal = document.getElementById('filter-time-end')?.value || '';
   
   // Get checked themes
   const checkedThemes = [];
@@ -287,6 +344,34 @@ function getFilteredAndSortedPosts() {
     if (window.deepDiveFilter) {
       if (String(post.theme).trim() !== String(window.deepDiveFilter.theme).trim()) return false;
       if (post.time < window.deepDiveFilter.startTime) return false;
+    }
+
+    // Time filter check
+    if (timePreset !== 'all') {
+      let referenceNow = Math.floor(Date.now() / 1000);
+      if (allPosts.length > 0) {
+        const latestPostTime = Math.max(...allPosts.map(p => p.time || 0));
+        if (latestPostTime > referenceNow) {
+          referenceNow = latestPostTime;
+        }
+      }
+
+      if (timePreset === '24h') {
+        if (post.time && (referenceNow - post.time > 24 * 3600)) return false;
+      } else if (timePreset === '48h') {
+        if (post.time && (referenceNow - post.time > 48 * 3600)) return false;
+      } else if (timePreset === '72h') {
+        if (post.time && (referenceNow - post.time > 72 * 3600)) return false;
+      } else if (timePreset === 'custom') {
+        if (timeStartVal) {
+          const startTs = Math.floor(new Date(timeStartVal).getTime() / 1000);
+          if (post.time && post.time < startTs) return false;
+        }
+        if (timeEndVal) {
+          const endTs = Math.floor(new Date(timeEndVal).getTime() / 1000);
+          if (post.time && post.time > endTs) return false;
+        }
+      }
     }
 
     // Theme check (ignored in deep dive override unless manually checked)
