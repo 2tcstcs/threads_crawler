@@ -85,7 +85,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779588769,
+    "last_seen": 1779604138,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -100,7 +100,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779588769,
+    "last_seen": 1779604138,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -115,7 +115,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779588769,
+    "last_seen": 1779604138,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -130,7 +130,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779588769,
+    "last_seen": 1779604138,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -145,7 +145,7 @@ window.crawledData = [
     "time": 1779544467,
     "time_str": "",
     "theme": "銀行",
-    "last_seen": 1779588755,
+    "last_seen": 1779604124,
     "first_seen": 1779544467,
     "source": "Threads Web"
   },
@@ -267,36 +267,6 @@ window.crawledData = [
     "theme": "銀行",
     "last_seen": 1779531717,
     "first_seen": 1779272517,
-    "source": "Threads Web"
-  },
-  {
-    "id": "DYizayPD7MM",
-    "username": "d0000abc",
-    "user_url": "https://www.threads.com/@d0000abc",
-    "text": "3天",
-    "url": "https://www.threads.com/@d0000abc/post/DYizayPD7MM",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779256768,
-    "time_str": "3天",
-    "theme": "銀行",
-    "last_seen": 1779524508,
-    "first_seen": 1779256768,
-    "source": "Threads Web"
-  },
-  {
-    "id": "DYixCv-ErZd",
-    "username": "jessie_lai1202",
-    "user_url": "https://www.threads.com/@jessie_lai1202",
-    "text": "3天",
-    "url": "https://www.threads.com/@jessie_lai1202/post/DYixCv-ErZd",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779245402,
-    "time_str": "3天",
-    "theme": "銀行",
-    "last_seen": 1779504602,
-    "first_seen": 1779245402,
     "source": "Threads Web"
   }
 ];
