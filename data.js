@@ -40,7 +40,7 @@ window.crawledData = [
     "time": 1779620904,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779620904,
+    "last_seen": 1779655390,
     "source": "Threads Web",
     "first_seen": 1779620904
   },
@@ -55,7 +55,7 @@ window.crawledData = [
     "time": 1779620904,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779620904,
+    "last_seen": 1779655390,
     "source": "Threads Web",
     "first_seen": 1779620904
   },
