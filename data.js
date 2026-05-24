@@ -145,7 +145,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779641576,
+    "last_seen": 1779645198,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -160,7 +160,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779641576,
+    "last_seen": 1779645198,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -175,7 +175,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779641576,
+    "last_seen": 1779645198,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -190,7 +190,7 @@ window.crawledData = [
     "time": 1779544481,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779641576,
+    "last_seen": 1779645198,
     "first_seen": 1779544481,
     "source": "Threads Web"
   },
@@ -205,7 +205,7 @@ window.crawledData = [
     "time": 1779544467,
     "time_str": "",
     "theme": "銀行",
-    "last_seen": 1779641559,
+    "last_seen": 1779645179,
     "first_seen": 1779544467,
     "source": "Threads Web"
   },
