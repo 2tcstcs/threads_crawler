@@ -19,6 +19,27 @@ const THEME_COLORS_LIGHT = ['#0066cc', '#34c759', '#ff9500', '#ff3b30'];
 const THEME_COLORS_DARK = ['#2997ff', '#30d158', '#ff9f0a', '#ff453a'];
 const FALLBACK_COLOR = '#8e8e93'; // Apple Gray
 
+// Safe localStorage wrapper to prevent crashes in private modes or file://
+const safeStorage = {
+  memoryStore: {},
+  getItem(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      console.warn(`[Safe Storage] Failed to get ${key} from localStorage, using memory fallback`, e);
+      return this.memoryStore[key] || null;
+    }
+  },
+  setItem(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn(`[Safe Storage] Failed to set ${key} in localStorage, using memory fallback`, e);
+      this.memoryStore[key] = value;
+    }
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize Dark/Light Mode
   initTheme();
@@ -53,9 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function initTheme() {
   const themeToggle = document.getElementById('theme-toggle');
+  if (!themeToggle) return;
   
   // Check local storage or system preferences
-  const savedTheme = localStorage.getItem('theme');
+  const savedTheme = safeStorage.getItem('theme');
   if (savedTheme === 'light') {
     document.documentElement.classList.remove('dark');
     document.documentElement.classList.add('light');
@@ -68,11 +90,11 @@ function initTheme() {
     if (document.documentElement.classList.contains('dark')) {
       document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('light');
-      localStorage.setItem('theme', 'light');
+      safeStorage.setItem('theme', 'light');
     } else {
       document.documentElement.classList.remove('light');
       document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+      safeStorage.setItem('theme', 'dark');
     }
     // Update charts text colors if needed
     updateChartTheme();
@@ -747,6 +769,10 @@ function escapeHTML(str) {
  * Initialize / update Chart.js Visuals
  */
 function updateCharts(filteredPosts) {
+  if (typeof Chart === 'undefined') {
+    console.warn("Chart.js is not loaded. Skipping charts rendering.");
+    return;
+  }
   // Extract theme list and compute stats
   const uniqueThemes = getUniqueThemes();
   
@@ -1609,7 +1635,7 @@ function renderHourlyCrawlList(filteredPosts) {
 
   if (toggleHeader && cardElement && cardBody) {
     // Check if collapsed state is saved in localStorage or default to false
-    const isCollapsed = localStorage.getItem('hourly-list-collapsed') === 'true';
+    const isCollapsed = safeStorage.getItem('hourly-list-collapsed') === 'true';
     if (isCollapsed) {
       cardElement.classList.add('collapsed');
       cardBody.style.display = 'none';
@@ -1626,12 +1652,12 @@ function renderHourlyCrawlList(filteredPosts) {
         cardElement.classList.add('collapsed');
         cardBody.style.display = 'none';
         if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
-        localStorage.setItem('hourly-list-collapsed', 'true');
+        safeStorage.setItem('hourly-list-collapsed', 'true');
       } else {
         cardElement.classList.remove('collapsed');
         cardBody.style.display = 'block';
         if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
-        localStorage.setItem('hourly-list-collapsed', 'false');
+        safeStorage.setItem('hourly-list-collapsed', 'false');
       }
     };
   }
