@@ -10,7 +10,7 @@ window.crawledData = [
     "time": 1779719670,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779719670,
+    "last_seen": 1779740399,
     "source": "Threads Web",
     "first_seen": 1779719670
   },
@@ -25,7 +25,7 @@ window.crawledData = [
     "time": 1779719670,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779719670,
+    "last_seen": 1779740399,
     "source": "Threads Web",
     "first_seen": 1779719670
   },
@@ -205,7 +205,7 @@ window.crawledData = [
     "time": 1779649292,
     "time_str": "",
     "theme": "銀行",
-    "last_seen": 1779733566,
+    "last_seen": 1779740384,
     "source": "Threads Web",
     "first_seen": 1779649292
   },
@@ -310,7 +310,7 @@ window.crawledData = [
     "time": 1779580149,
     "time_str": "",
     "theme": "詐騙",
-    "last_seen": 1779719670,
+    "last_seen": 1779740399,
     "source": "Threads Web",
     "first_seen": 1779580149
   },
@@ -430,7 +430,7 @@ window.crawledData = [
     "time": 1779544467,
     "time_str": "",
     "theme": "銀行",
-    "last_seen": 1779733566,
+    "last_seen": 1779740384,
     "first_seen": 1779544467,
     "source": "Threads Web"
   },
@@ -507,36 +507,6 @@ window.crawledData = [
     "theme": "旅遊",
     "last_seen": 1779439864,
     "first_seen": 1779396664,
-    "source": "Threads Web"
-  },
-  {
-    "id": "DYmJ4DnlBe8",
-    "username": "howardonggua",
-    "user_url": "https://www.threads.com/@howardonggua",
-    "text": "銀行貸款",
-    "url": "https://www.threads.com/@howardonggua/post/DYmJ4DnlBe8",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779391417,
-    "time_str": "1天",
-    "theme": "銀行",
-    "last_seen": 1779477817,
-    "first_seen": 1779391417,
-    "source": "Threads Web"
-  },
-  {
-    "id": "DYm0fLDjyBo",
-    "username": "park_richway",
-    "user_url": "https://www.threads.com/@park_richway",
-    "text": "其實早在前幾個月，台新銀行 就曾主動打電話問我有沒有資金需求。 \n那時候送件後，額度居然核到85萬。 \n說真的，當下甚至有點不敢相信，20歲的自己竟然能貸到這個數字。",
-    "url": "https://www.threads.com/@park_richway/post/DYm0fLDjyBo",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779391417,
-    "time_str": "1天",
-    "theme": "銀行",
-    "last_seen": 1779477817,
-    "first_seen": 1779391417,
     "source": "Threads Web"
   }
 ];
