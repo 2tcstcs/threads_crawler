@@ -13,50 +13,5 @@ window.crawledData = [
     "last_seen": 1779580149,
     "source": "Threads Web",
     "first_seen": 1779580149
-  },
-  {
-    "id": "DP5G4rekuRy",
-    "username": "_yenfenglee",
-    "user_url": "https://www.threads.com/@_yenfenglee",
-    "text": "剛去彰化銀行開戶被婉拒，看了一下桌上的公告。",
-    "url": "https://www.threads.com/@_yenfenglee/post/DP5G4rekuRy/media",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779548472,
-    "time_str": "",
-    "theme": "銀行",
-    "last_seen": 1779548472,
-    "source": "Threads Web",
-    "first_seen": 1779548472
-  },
-  {
-    "id": "DYWfnHQk-Z-",
-    "username": "eric_lin0705",
-    "user_url": "https://www.threads.com/@eric_lin0705",
-    "text": "？？？？？\n舒華開銀行了？？",
-    "url": "https://www.threads.com/@eric_lin0705/post/DYWfnHQk-Z-/media",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779548472,
-    "time_str": "",
-    "theme": "銀行",
-    "last_seen": 1779548472,
-    "source": "Threads Web",
-    "first_seen": 1779548472
-  },
-  {
-    "id": "DX35EkvgfWY",
-    "username": "oliventw",
-    "user_url": "https://www.threads.com/@oliventw",
-    "text": "2026-5-3",
-    "url": "https://www.threads.com/@oliventw/post/DX35EkvgfWY/media",
-    "likes": 0,
-    "replies": 0,
-    "time": 1779544481,
-    "time_str": "",
-    "theme": "詐騙",
-    "last_seen": 1779576205,
-    "first_seen": 1779544481,
-    "source": "Threads Web"
   }
 ];
