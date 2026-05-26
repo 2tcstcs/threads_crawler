@@ -28,7 +28,7 @@ DEFAULT_THEMES = ["AI", "台股", "旅遊", "美食"]
 def parse_time_str(time_str):
     """
     Parse relative time strings (like "3h", "12m", "1天", "剛剛") or absolute date strings
-    (like "01/26/26", "2026-1-26", "2026年1月26日") into a Unix timestamp.
+    (like "01/26/26", "2026-1-26", "2026年1月26日", "5月3日", "May 3") into a Unix timestamp.
     """
     import datetime
     now = int(time.time())
@@ -37,23 +37,78 @@ def parse_time_str(time_str):
         
     time_str = time_str.lower().strip()
     
-    # Check if absolute date
-    if any(delim in time_str for delim in ["/", "-", "年"]):
+    now_dt = datetime.datetime.now()
+    current_year = now_dt.year
+    
+    months_map = {
+        "jan": 1, "january": 1,
+        "feb": 2, "february": 2,
+        "mar": 3, "march": 3,
+        "apr": 4, "april": 4,
+        "may": 5,
+        "jun": 6, "june": 6,
+        "jul": 7, "july": 7,
+        "aug": 8, "august": 8,
+        "sep": 9, "september": 9,
+        "oct": 10, "october": 10,
+        "nov": 11, "november": 11,
+        "dec": 12, "december": 12
+    }
+    
+    # 1. Check Chinese style with year: "2026年1月26日"
+    zh_year_match = re.search(r"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日?", time_str)
+    if zh_year_match:
         try:
-            # Check Chinese style: "2026年1月26日"
-            zh_match = re.search(r"(\d{4})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日", time_str)
-            if zh_match:
-                dt = datetime.datetime(int(zh_match.group(1)), int(zh_match.group(2)), int(zh_match.group(3)))
-                return int(dt.timestamp())
-                
-            # Check standard YYYY-MM-DD
-            dash_match = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", time_str)
-            if dash_match:
-                dt = datetime.datetime(int(dash_match.group(1)), int(dash_match.group(2)), int(dash_match.group(3)))
-                return int(dt.timestamp())
-                
-            # If it's slash separated: 01/26/26 or 2026/1/26
-            parts = [p.strip() for p in time_str.split("/") if p.strip()]
+            dt = datetime.datetime(int(zh_year_match.group(1)), int(zh_year_match.group(2)), int(zh_year_match.group(3)))
+            return int(dt.timestamp())
+        except Exception:
+            pass
+            
+    # 2. Check Chinese style without year: "5月3日"
+    zh_noyear_match = re.search(r"(\d{1,2})\s*月\s*(\d{1,2})\s*日?", time_str)
+    if zh_noyear_match:
+        try:
+            dt = datetime.datetime(current_year, int(zh_noyear_match.group(1)), int(zh_noyear_match.group(2)))
+            if dt > now_dt + datetime.timedelta(days=1):
+                dt = datetime.datetime(current_year - 1, int(zh_noyear_match.group(1)), int(zh_noyear_match.group(2)))
+            return int(dt.timestamp())
+        except Exception:
+            pass
+
+    # 3. Check English style with/without year: "Dec 19, 2025" or "May 3"
+    for m_name, m_val in months_map.items():
+        if m_name in time_str:
+            year_match = re.search(r"\b(20\d{2})\b", time_str)
+            time_without_year = time_str.replace(year_match.group(1), "") if year_match else time_str
+            day_match = re.search(r"\b(\d{1,2})\b", time_without_year)
+            if year_match and day_match:
+                try:
+                    dt = datetime.datetime(int(year_match.group(1)), m_val, int(day_match.group(1)))
+                    return int(dt.timestamp())
+                except Exception:
+                    pass
+            elif day_match:
+                try:
+                    dt = datetime.datetime(current_year, m_val, int(day_match.group(1)))
+                    if dt > now_dt + datetime.timedelta(days=1):
+                        dt = datetime.datetime(current_year - 1, m_val, int(day_match.group(1)))
+                    return int(dt.timestamp())
+                except Exception:
+                    pass
+
+    # 4. Check standard YYYY-MM-DD
+    dash_match = re.search(r"(\d{4})-(\d{1,2})-(\d{1,2})", time_str)
+    if dash_match:
+        try:
+            dt = datetime.datetime(int(dash_match.group(1)), int(dash_match.group(2)), int(dash_match.group(3)))
+            return int(dt.timestamp())
+        except Exception:
+            pass
+
+    # 5. Check slash separated: 01/26/26 or 2026/1/26 or 5/3
+    if "/" in time_str:
+        parts = [p.strip() for p in time_str.split("/") if p.strip()]
+        try:
             if len(parts) == 3:
                 if len(parts[0]) == 4: # YYYY/MM/DD
                     dt = datetime.datetime(int(parts[0]), int(parts[1]), int(parts[2]))
@@ -62,22 +117,29 @@ def parse_time_str(time_str):
                     day = int(parts[1])
                     year = int(parts[2])
                     if year < 100:
-                        year += 2000 # Assume 21st century
+                        year += 2000
                     dt = datetime.datetime(year, month, day)
                 return int(dt.timestamp())
-        except Exception as e:
-            logger.warning(f"Failed to parse absolute date '{time_str}': {e}")
-            return now
+            elif len(parts) == 2: # MM/DD or M/D (current year)
+                month = int(parts[0])
+                day = int(parts[1])
+                dt = datetime.datetime(current_year, month, day)
+                if dt > now_dt + datetime.timedelta(days=1):
+                    dt = datetime.datetime(current_year - 1, month, day)
+                return int(dt.timestamp())
+        except Exception:
+            pass
 
+    # 6. Check relative time strings
     try:
-        # Match digits
         digits_match = re.search(r"\d+", time_str)
         if not digits_match:
+            if any(w in time_str for w in ["剛剛", "now", "just"]):
+                return now
             return now
             
         val = int(digits_match.group())
         
-        # Check units (English & Chinese)
         if any(unit in time_str for unit in ["秒", "s"]):
             return now - val
         elif any(unit in time_str for unit in ["分", "m"]):
@@ -92,6 +154,7 @@ def parse_time_str(time_str):
             return now - val * 86400 * 365
     except Exception:
         pass
+        
     return now
 
 async def scrape_theme(page, theme_name, theme_query, scrolls=2):
@@ -132,22 +195,57 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
 
             # Run JS to extract post details using the class-independent selector algorithm
             extracted_data = await page.evaluate(r"""() => {
+                function getTimestampScore(text) {
+                    if (!text) return -1;
+                    text = text.trim().toLowerCase();
+                    if (text === '') return -1;
+                    
+                    if (/^\d{4}[年\-\/]\d{1,2}[月\-\/]\d{1,2}/.test(text)) return 10;
+                    if (/^\d{1,2}[月\-\/]\d{1,2}/.test(text)) return 9;
+                    if (/^\d+[hmdswy]$/.test(text)) return 8;
+                    if (/^\d+\s*(天|小時|分鐘|分|秒|週|週前|天前|小時前|分鐘前|秒前)/.test(text)) return 8;
+                    if (text === '剛剛' || text === 'now' || text === 'just now') return 7;
+                    
+                    if (text.includes('讚') || text.includes('like') || text.includes('回覆') || text.includes('replies') || text.includes('repost') || text.includes('share') || text.includes('分享') || text.includes('翻譯')) {
+                        return 0;
+                    }
+                    return 1;
+                }
+
                 let postLinks = Array.from(document.querySelectorAll('a[href*="/post/"]'));
-                let uniqueHrefs = [];
-                let uniqueLinks = [];
+                let uniquePosts = {};
                 
                 postLinks.forEach(link => {
                     let href = link.getAttribute('href');
-                    if (href && !uniqueHrefs.includes(href)) {
-                        uniqueHrefs.push(href);
-                        uniqueLinks.push(link);
+                    if (!href) return;
+                    let postIdMatch = href.match(/\/post\/([A-Za-z0-9_\-]+)/);
+                    if (!postIdMatch) return;
+                    let postId = postIdMatch[1];
+                    
+                    let cleanHref = href.split('/media')[0].split('/embed')[0].split('?')[0];
+                    if (cleanHref.endsWith('/')) {
+                        cleanHref = cleanHref.slice(0, -1);
+                    }
+                    
+                    let text = link.textContent ? link.textContent.trim() : '';
+                    let score = getTimestampScore(text);
+                    
+                    if (!uniquePosts[postId] || score > uniquePosts[postId].score) {
+                        uniquePosts[postId] = {
+                            link: link,
+                            href: cleanHref,
+                            score: score,
+                            text: text
+                        };
                     }
                 });
                 
+                let uniqueLinks = Object.values(uniquePosts);
                 let results = [];
                 
-                uniqueLinks.forEach(link => {
-                    let href = link.getAttribute('href');
+                uniqueLinks.forEach(item => {
+                    let link = item.link;
+                    let href = item.href;
                     let postIdMatch = href.match(/\/post\/([A-Za-z0-9_\-]+)/);
                     if (!postIdMatch) return;
                     let postId = postIdMatch[1];
@@ -245,7 +343,7 @@ async def scrape_theme(page, theme_name, theme_query, scrolls=2):
                         url: 'https://www.threads.com' + href,
                         likes: likes,
                         replies: replies,
-                        time_str: link.textContent.trim()
+                        time_str: item.text
                     });
                 });
                 return results;
@@ -318,6 +416,7 @@ def load_config():
     return themes, scrolls, only_today
 
 async def main_async(args):
+    start_time = int(time.time())
     # Load existing database
     existing_posts = {}
     if not args.init and os.path.exists("data.json"):
@@ -391,6 +490,13 @@ async def main_async(args):
                 for post in theme_posts:
                     if only_today and post.get("time", 0) < today_start_timestamp:
                         continue
+                    
+                    # Ensure post is within 72 hours of crawler execution start time
+                    post_time = post.get("time", 0)
+                    if start_time - post_time > 259200: # 72 hours
+                        logger.info(f"Skipping newly scraped post {post.get('id')} because it is older than 72 hours ({post.get('time_str')})")
+                        continue
+                        
                     key = post.get("id") or post.get("url")
                     if not key:
                         continue
@@ -419,17 +525,17 @@ async def main_async(args):
             logger.info("Closing Playwright browser context gracefully...")
             await browser.close()
 
-    # Automatically clean up posts older than 96 hours (today 24h + preceding 72h = 345600 seconds) of publication age
+    # Automatically clean up posts older than 72 hours of publication age
     now = int(time.time())
     filtered_posts = {}
     for pid, pdata in existing_posts.items():
-        # Keep only posts published within the last 96 hours (today 24 hours and preceding 72 hours)
-        if now - pdata.get("time", now) <= 345600:
+        # Keep only posts published within the last 72 hours
+        if now - pdata.get("time", now) <= 259200:
             filtered_posts[pid] = pdata
             
     removed_count = len(existing_posts) - len(filtered_posts)
     if removed_count > 0:
-        logger.info(f"Cleaned up {removed_count} posts older than 96 hours.")
+        logger.info(f"Cleaned up {removed_count} posts older than 72 hours.")
         
     output_list = list(filtered_posts.values())
     
