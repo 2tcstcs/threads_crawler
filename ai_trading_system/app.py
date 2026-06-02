@@ -385,7 +385,7 @@ def send_system_failure_notification(consecutive_count, error_msg):
     except Exception as e:
         print(f"[DISCORD] Failed to send engine status alert: {e}")
 
-def run_loop():
+def run_loop(run_once=False):
     consecutive_failures = 0
     print("[SYSTEM START] Engine initialized. Entering main loop...")
     
@@ -437,6 +437,10 @@ def run_loop():
             # Reset consecutive failures counter on successful iteration
             consecutive_failures = 0
             
+            if run_once:
+                print("[SYSTEM END] Single run completed successfully. Exiting.")
+                break
+                
             # Sleep 60 seconds before next polling iteration
             time.sleep(60)
             
@@ -444,6 +448,10 @@ def run_loop():
             consecutive_failures += 1
             print(f"[SYSTEM ERROR] Exception in main loop (Count={consecutive_failures}): {e}", file=sys.stderr)
             
+            if run_once:
+                print("[SYSTEM END] Single run encountered error. Exiting with failure.")
+                sys.exit(1)
+                
             if consecutive_failures >= 3:
                 # Alert Discord and enter 5-minute cool-down
                 send_system_failure_notification(consecutive_failures, e)
@@ -455,4 +463,10 @@ def run_loop():
                 time.sleep(60)
 
 if __name__ == "__main__":
-    run_loop()
+    import argparse
+    parser = argparse.ArgumentParser(description="AI Trading Decision System Backend")
+    parser.add_argument("--once", action="store_true", help="Run a single iteration and exit")
+    args = parser.parse_args()
+    
+    run_loop(run_once=args.once)
+
