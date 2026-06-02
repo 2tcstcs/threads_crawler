@@ -120,3 +120,8 @@ Thumbs.db
 
 # Scraper logs
 logs/
+
+# Local Environment Variables
+.env
+.env.local
+.env.*

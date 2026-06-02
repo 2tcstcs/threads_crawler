@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUANT-CORE TERMINAL | AI 智慧財經交易決策系統</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Outfit', 'Microsoft JhengHei', -apple-system, sans-serif;
+            background-color: #070b13; /* Darker than default slate */
+            color: #e2e8f0;
+        }
+        
+        /* Neon Glow Custom Styling */
+        .glow-green {
+            border-color: #10B981 !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+            background: linear-gradient(135deg, #111827 0%, #064e3b 100%);
+        }
+        .glow-red {
+            border-color: #EF4444 !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.35);
+            background: linear-gradient(135deg, #111827 0%, #7f1d1d 100%);
+        }
+        
+        /* Led breathing animation */
+        @keyframes led-glow {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+                box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.95);
+                box-shadow: 0 0 2px rgba(16, 185, 129, 0.2);
+            }
+        }
+        .led-breathe {
+            animation: led-glow 2s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800 bg-[#0b0f19]/95 backdrop-blur-md sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <!-- Left Title and LED Indicator -->
+        <div class="flex items-center space-x-3">
+            <span class="w-3 h-3 bg-emerald-500 rounded-full led-breathe"></span>
+            <h1 class="text-xl font-bold tracking-wider text-emerald-400 font-mono">QUANT-CORE TERMINAL</h1>
+            <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded font-mono border border-slate-700">LIVE FEED</span>
+        </div>
+
+        <!-- Right Macro Panel -->
+        <div class="flex items-center space-x-6 bg-slate-900/60 border border-slate-800 rounded-lg px-4 py-1.5 font-mono text-sm">
+            <div class="flex items-center space-x-2">
+                <span class="text-slate-500">US10Y:</span>
+                <span id="header-us10y" class="text-emerald-400 font-bold">--%</span>
+            </div>
+            <div class="h-4 w-[1px] bg-slate-800"></div>
+            <div class="flex items-center space-x-2">
+                <span class="text-slate-500">USDTWD:</span>
+                <span id="header-usdtwd" class="text-emerald-400 font-bold">--</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Configuration Drawer -->
+    <section class="max-w-7xl mx-auto w-full px-6 mt-4">
+        <details id="config-drawer" class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-4 transition-all duration-300">
+            <summary class="text-sm font-semibold text-slate-400 cursor-pointer hover:text-slate-200 select-none flex items-center justify-between">
+                <span>⚙️ Supabase API 連線配置 (點擊展開/收合)</span>
+                <span id="config-status" class="text-xs text-amber-500 font-mono">未配置</span>
+            </summary>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">SUPABASE URL</label>
+                    <input type="text" id="supabase-url" placeholder="https://xxxxxxxx.supabase.co" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">SUPABASE ANON / SERVICE KEY</label>
+                    <input type="password" id="supabase-key" placeholder="eyJhbGciOi..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 font-mono">
+                </div>
+            </div>
+            <div class="mt-3 flex justify-end space-x-3">
+                <button onclick="clearConfig()" class="px-4 py-2 border border-slate-800 text-slate-400 rounded-lg text-xs hover:bg-slate-800 hover:text-slate-200 transition">清除設定</button>
+                <button onclick="saveConfig()" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs hover:bg-emerald-500 transition font-semibold">儲存設定</button>
+            </div>
+        </details>
+    </section>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-6 py-6 flex flex-col space-y-6">
+        
+        <!-- Controls & Metrics Row -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            <!-- Left Info -->
+            <div>
+                <h2 class="text-lg font-bold text-slate-200">即時多維決策情報牆</h2>
+                <p class="text-xs text-slate-500 mt-1">系統每 10 秒自動重新整理，擷取最新 30 筆智慧財經評級信號</p>
+            </div>
+
+            <!-- Right Controls -->
+            <div class="flex items-center space-x-3 self-end sm:self-auto">
+                <span class="text-xs text-slate-400 font-medium">過濾等級:</span>
+                <div class="bg-slate-900 border border-slate-850 p-1 rounded-lg flex space-x-1">
+                    <button id="btn-filter-all" onclick="setFilter(false)" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition duration-200">
+                        顯示全部
+                    </button>
+                    <button id="btn-filter-high" onclick="setFilter(true)" class="px-3 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition duration-200">
+                        高衝擊訊號 (±2以上)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connection Error Warning Overlay -->
+        <div id="connection-warning" class="hidden bg-amber-500/10 border border-amber-500/20 rounded-xl p-6 text-center">
+            <span class="text-3xl">⚠️</span>
+            <h3 class="text-base font-bold text-amber-400 mt-2">尚未正確設定 Supabase API 金鑰</h3>
+            <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">請點擊上方「Supabase API 連線配置」按鈕，並填入您的資料庫 API 端點與連線金鑰，系統將直接載入分析訊號。</p>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="hidden flex flex-col items-center justify-center py-20 space-y-4">
+            <svg class="animate-spin h-8 w-8 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-xs text-slate-400 font-mono">FETCHING QUANT SIGNALS...</span>
+        </div>
+
+        <!-- Signal Waterfall Container -->
+        <div id="signal-wall" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards Rendered Dynamically -->
+        </div>
+
+        <!-- Empty Signal State -->
+        <div id="empty-state" class="hidden bg-slate-900/20 border border-slate-800 border-dashed rounded-xl py-16 text-center">
+            <span class="text-3xl">📭</span>
+            <h3 class="text-sm font-bold text-slate-400 mt-2">目前沒有任何信號資料</h3>
+            <p class="text-xs text-slate-500 mt-1">請確保後端 python 監聽引擎正常執行並寫入資料庫。</p>
+        </div>
+
+    </main>
+
+    <!-- Footer Status Bar -->
+    <footer class="border-t border-slate-900 bg-slate-950/80 px-6 py-3 flex items-center justify-between text-xs text-slate-500 font-mono mt-auto">
+        <div>SYSTEM VERSION v1.0.0</div>
+        <div id="sync-timer">LAST UPDATED: NEVER</div>
+    </footer>
+
+    <script>
+        // API Configurations
+        let supabaseUrl = '';
+        let supabaseKey = '';
+        let filterHighImpact = false;
+        let activeInterval = null;
+
+        // On Load Initial Setup
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConfig();
+            setupAutoRefresh();
+        });
+
+        function loadConfig() {
+            supabaseUrl = localStorage.getItem('supabase_url') || '';
+            supabaseKey = localStorage.getItem('supabase_key') || '';
+            
+            document.getElementById('supabase-url').value = supabaseUrl;
+            document.getElementById('supabase-key').value = supabaseKey;
+            
+            const statusLabel = document.getElementById('config-status');
+            const drawer = document.getElementById('config-drawer');
+            
+            if (supabaseUrl && supabaseKey) {
+                statusLabel.innerText = "已連線 (點擊修改)";
+                statusLabel.className = "text-xs text-emerald-400 font-mono";
+                drawer.removeAttribute('open');
+                
+                document.getElementById('connection-warning').classList.add('hidden');
+                fetchData();
+            } else {
+                statusLabel.innerText = "待設定";
+                statusLabel.className = "text-xs text-amber-500 font-mono";
+                drawer.setAttribute('open', '');
+                
+                document.getElementById('connection-warning').classList.remove('hidden');
+            }
+        }
+
+        function saveConfig() {
+            const urlVal = document.getElementById('supabase-url').value.trim();
+            const keyVal = document.getElementById('supabase-key').value.trim();
+            
+            if (!urlVal || !keyVal) {
+                alert("請填寫完整的 Supabase URL 與 Key");
+                return;
+            }
+            
+            localStorage.setItem('supabase_url', urlVal);
+            localStorage.setItem('supabase_key', keyVal);
+            
+            loadConfig();
+        }
+
+        function clearConfig() {
+            localStorage.removeItem('supabase_url');
+            localStorage.removeItem('supabase_key');
+            document.getElementById('supabase-url').value = '';
+            document.getElementById('supabase-key').value = '';
+            
+            loadConfig();
+            document.getElementById('signal-wall').innerHTML = '';
+        }
+
+        function setFilter(highImpactOnly) {
+            filterHighImpact = highImpactOnly;
+            
+            const btnAll = document.getElementById('btn-filter-all');
+            const btnHigh = document.getElementById('btn-filter-high');
+            
+            if (highImpactOnly) {
+                btnHigh.className = "px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition duration-200";
+                btnAll.className = "px-3 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition duration-200";
+            } else {
+                btnAll.className = "px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition duration-200";
+                btnHigh.className = "px-3 py-1.5 rounded-md text-xs font-semibold text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition duration-200";
+            }
+            
+            fetchData();
+        }
+
+        function setupAutoRefresh() {
+            if (activeInterval) {
+                clearInterval(activeInterval);
+            }
+            // Auto refresh every 10 seconds
+            activeInterval = setInterval(() => {
+                if (supabaseUrl && supabaseKey) {
+                    fetchData(true); // Quiet fetch (no full loading screen)
+                }
+            }, 10000);
+        }
+
+        async function fetchData(quiet = false) {
+            if (!supabaseUrl || !supabaseKey) return;
+            
+            const wall = document.getElementById('signal-wall');
+            const spinner = document.getElementById('loading-spinner');
+            const emptyState = document.getElementById('empty-state');
+            
+            if (!quiet) {
+                spinner.classList.remove('hidden');
+                wall.classList.add('opacity-40');
+            }
+            
+            try {
+                // REST URL (limit 30 records, ordered by created_at desc)
+                const fetchUrl = `${supabaseUrl}/rest/v1/market_news?order=created_at.desc&limit=30`;
+                
+                const response = await fetch(fetchUrl, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`DB Error: status code ${response.status}`);
+                }
+                
+                const signals = await response.json();
+                
+                if (!signals || signals.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    wall.innerHTML = '';
+                    spinner.classList.add('hidden');
+                    wall.classList.remove('opacity-40');
+                    return;
+                }
+                
+                emptyState.classList.add('hidden');
+                
+                // Update Macro Header using the latest record's cached indicators
+                const latestRecord = signals[0];
+                if (latestRecord && latestRecord.raw_indicators) {
+                    const us10y = latestRecord.raw_indicators.us10y;
+                    const usdtwd = latestRecord.raw_indicators.usdtwd;
+                    
+                    document.getElementById('header-us10y').innerText = us10y ? `${us10y}%` : '--%';
+                    document.getElementById('header-usdtwd').innerText = usdtwd ? usdtwd : '--';
+                }
+                
+                // Filter signals locally if filter is active
+                const filtered = signals.filter(item => {
+                    if (filterHighImpact) {
+                        return Math.abs(item.total_score) >= 2;
+                    }
+                    return true;
+                });
+                
+                renderSignals(filtered);
+                
+                const now = new Date();
+                document.getElementById('sync-timer').innerText = `LAST UPDATED: ${now.toLocaleTimeString()}`;
+                
+            } catch (err) {
+                console.error("Fetch Data Failed: ", err);
+                if (!quiet) {
+                    wall.innerHTML = `<div class="col-span-full bg-red-950/20 border border-red-800/40 rounded-xl p-6 text-center text-red-400">連線失敗: ${err.message}，請檢查連線資訊配置。</div>`;
+                }
+            } finally {
+                spinner.classList.add('hidden');
+                wall.classList.remove('opacity-40');
+            }
+        }
+
+        function formatDateTime(isoString) {
+            if (!isoString) return '';
+            const dt = new Date(isoString);
+            const year = dt.getFullYear();
+            const month = String(dt.getMonth() + 1).padStart(2, '0');
+            const day = String(dt.getDate()).padStart(2, '0');
+            const hours = String(dt.getHours()).padStart(2, '0');
+            const minutes = String(dt.getMinutes()).padStart(2, '0');
+            const seconds = String(dt.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        function renderSignals(items) {
+            const wall = document.getElementById('signal-wall');
+            
+            if (items.length === 0) {
+                wall.innerHTML = `<div class="col-span-full bg-slate-900/40 border border-slate-800 rounded-xl py-12 text-center text-slate-500 text-xs font-mono">目前條件下無任何評級信號</div>`;
+                return;
+            }
+            
+            let htmlContent = '';
+            
+            items.forEach(sig => {
+                const score = sig.total_score || 0;
+                let cardClass = "bg-slate-900/90 border border-slate-800 rounded-xl p-5 hover:border-slate-700 transition duration-300 flex flex-col justify-between";
+                let actionBadge = '';
+                
+                if (score >= 2) {
+                    cardClass = "glow-green border rounded-xl p-5 transition duration-300 flex flex-col justify-between";
+                    actionBadge = `<span class="bg-emerald-500 text-slate-950 font-bold text-[10px] tracking-wider px-2 py-0.5 rounded shadow-sm shadow-emerald-500/30">★ STRONG BUY</span>`;
+                } else if (score <= -2) {
+                    cardClass = "glow-red border rounded-xl p-5 transition duration-300 flex flex-col justify-between";
+                    actionBadge = `<span class="bg-red-500 text-white font-bold text-[10px] tracking-wider px-2 py-0.5 rounded shadow-sm shadow-red-500/30">⚠️ STRONG SELL</span>`;
+                } else {
+                    actionBadge = `<span class="bg-slate-800 text-slate-400 font-semibold text-[10px] tracking-wider px-2 py-0.5 rounded">NEUTRAL FEED</span>`;
+                }
+                
+                // Sentiment Badge Color
+                let sentimentBadge = '';
+                const sentiment = sig.sentiment || '中性';
+                if (sentiment === '利多') {
+                    sentimentBadge = `<span class="bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 text-[10px] px-2 py-0.5 rounded font-semibold">利多</span>`;
+                } else if (sentiment === '利空') {
+                    sentimentBadge = `<span class="bg-red-950/60 text-red-400 border border-red-800/40 text-[10px] px-2 py-0.5 rounded font-semibold">利空</span>`;
+                } else {
+                    sentimentBadge = `<span class="bg-slate-950 text-slate-400 border border-slate-800 text-[10px] px-2 py-0.5 rounded font-semibold">中性</span>`;
+                }
+
+                // Format score text representation
+                const scoreRep = score > 0 ? `+${score}` : `${score}`;
+                
+                // Try fetching raw indicators data for sub-display
+                let macroSub = '';
+                let reasonText = '';
+                if (sig.raw_indicators) {
+                    const us10yVal = sig.raw_indicators.us10y;
+                    const usdtwdVal = sig.raw_indicators.usdtwd;
+                    reasonText = sig.raw_indicators.reason || '';
+                    macroSub = `<div class="text-[10px] text-slate-500 mt-2 font-mono flex items-center space-x-2">
+                        <span>美債10Y: ${us10yVal ? `${us10yVal}%` : '--'}</span>
+                        <span>|</span>
+                        <span>匯率: ${usdtwdVal || '--'}</span>
+                    </div>`;
+                }
+                
+                htmlContent += `
+                    <div class="${cardClass}">
+                        <div class="flex flex-col h-full">
+                            <!-- Top row: ID and Strong Signal Indicator -->
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-[10px] text-slate-500 font-mono">ID: ${sig.id}</span>
+                                ${actionBadge}
+                            </div>
+                            
+                            <!-- AI Smart 30-word Summary -->
+                            <h3 class="text-base font-bold text-slate-100 leading-relaxed mb-2">
+                                ${sig.ai_summary || '無摘要資訊'}
+                            </h3>
+                            
+                            <!-- AI evaluation reason -->
+                            ${reasonText ? `<p class="text-xs text-slate-400 bg-slate-950/40 rounded p-2 border border-slate-850/60 my-2 leading-relaxed">${reasonText}</p>` : ''}
+                            
+                            <!-- Original Title -->
+                            <p class="text-xs text-slate-500 line-clamp-2 italic mb-4">
+                                原始新聞：${sig.original_title || '無標題'}
+                            </p>
+                            
+                            <!-- Bottom row: Footer Info -->
+                            <div class="border-t border-slate-800/80 pt-3 flex flex-col space-y-2 mt-auto">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] text-slate-500 font-mono">${formatDateTime(sig.created_at)}</span>
+                                    <div class="flex items-center space-x-2">
+                                        ${sentimentBadge}
+                                        <span class="bg-slate-950 text-slate-300 text-[10px] px-2 py-0.5 rounded font-mono font-bold border border-slate-800">Score: ${scoreRep}</span>
+                                    </div>
+                                </div>
+                                ${macroSub}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            wall.innerHTML = htmlContent;
+        }
+    </script>
+</body>
+</html>
