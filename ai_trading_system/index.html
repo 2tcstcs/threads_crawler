@@ -118,7 +118,12 @@
             <!-- Left Info -->
             <div>
                 <h2 class="text-lg font-bold text-slate-200">即時多維決策情報牆</h2>
-                <p class="text-xs text-slate-500 mt-1">系統每 10 秒自動重新整理，擷取最新 30 筆智慧財經評級信號</p>
+                <div class="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center bg-slate-900 border border-slate-800 rounded px-2.5 py-1 font-mono text-[11px] shadow-sm">
+                        🔄 <span id="countdown-timer" class="text-emerald-400 font-bold mx-1">10</span>s 後更新
+                    </span>
+                    <span>系統自動重新整理，目前已擷取最新 <span id="signal-count" class="text-emerald-400 font-bold font-mono text-sm px-1">0</span> 筆智慧財經評級信號</span>
+                </div>
             </div>
 
             <!-- Right Controls -->
@@ -252,16 +257,24 @@
             fetchData();
         }
 
+        let countdown = 10;
         function setupAutoRefresh() {
             if (activeInterval) {
                 clearInterval(activeInterval);
             }
-            // Auto refresh every 10 seconds
+            countdown = 10;
+            document.getElementById('countdown-timer').innerText = countdown;
+            
             activeInterval = setInterval(() => {
-                if (supabaseUrl && supabaseKey) {
-                    fetchData(true); // Quiet fetch (no full loading screen)
+                countdown--;
+                if (countdown <= 0) {
+                    countdown = 10;
+                    if (supabaseUrl && supabaseKey) {
+                        fetchData(true); // Quiet fetch (no full loading screen)
+                    }
                 }
-            }, 10000);
+                document.getElementById('countdown-timer').innerText = countdown;
+            }, 1000);
         }
 
         async function fetchData(quiet = false) {
@@ -295,6 +308,7 @@
                 const signals = await response.json();
                 
                 if (!signals || signals.length === 0) {
+                    document.getElementById('signal-count').innerText = '0';
                     emptyState.classList.remove('hidden');
                     wall.innerHTML = '';
                     spinner.classList.add('hidden');
@@ -322,6 +336,7 @@
                     return true;
                 });
                 
+                document.getElementById('signal-count').innerText = filtered.length;
                 renderSignals(filtered);
                 
                 const now = new Date();
