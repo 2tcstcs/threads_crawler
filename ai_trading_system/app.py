@@ -142,8 +142,46 @@ def poll_cls_news():
             last_err = e
             print(f"[POLLER] Failed to connect to {domain}: {e}")
             
+    # If all CLS domains fail, attempt to fetch from community RSSHub instances
+    print("[POLLER] CLS domains did not return data. Attempting public RSSHub instances...")
+    rsshub_instances = [
+        "https://rss.rsshub.app",
+        "https://hub.sl.al",
+        "https://rsshub.daily-apis.com"
+    ]
+    for ins in rsshub_instances:
+        url = f"{ins}/cls/telegraph.json"
+        try:
+            print(f"[POLLER] Requesting CLS telegraph feed from RSSHub: {ins}...")
+            r = requests.get(url, headers={"User-Agent": headers["User-Agent"]}, timeout=10)
+            if r.status_code == 200:
+                res_data = r.json()
+                items = res_data.get("items") or []
+                news_list = []
+                import re
+                for item in items:
+                    title_text = item.get("title") or ""
+                    content_text = item.get("content_html") or item.get("summary") or ""
+                    content_clean = re.sub(r'<[^>]+>', '', content_text) # Strip HTML tags
+                    
+                    # Generate a unique string ID based on title/url if ID is URL format
+                    raw_id = str(item.get("id") or "")
+                    clean_id = raw_id.split('/')[-1] if '/' in raw_id else raw_id
+                    
+                    news_list.append({
+                        "id": clean_id,
+                        "title": title_text,
+                        "content": content_clean,
+                        "ctime": int(time.time())
+                    })
+                if news_list:
+                    print(f"[POLLER] Successfully fetched {len(news_list)} items from RSSHub ({ins})")
+                    return news_list
+        except Exception as e:
+            print(f"[POLLER] RSSHub instance {ins} failed: {e}")
+            
     # If all fail, raise exception to trigger loop retry logic
-    raise last_err or Exception("All CLS domains failed to respond.")
+    raise last_err or Exception("All CLS domains and RSSHub fallbacks failed to respond.")
 
 def fetch_db_whitelist():
     """
