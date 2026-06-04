@@ -33,7 +33,7 @@ if missing_vars:
 # Configure Gemini AI
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-    gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+    gemini_model = genai.GenerativeModel('gemini-2.5-flash')
 else:
     gemini_model = None
 
@@ -135,7 +135,7 @@ def poll_cls_news():
                     if isinstance(data, list):
                         return data
                     elif isinstance(data, dict):
-                        return data.get("roll_list") or data.get("list") or []
+                        return data.get("roll_data") or data.get("roll_list") or data.get("list") or []
             else:
                 print(f"[POLLER] Domain {domain} returned status code {r.status_code}")
         except Exception as e:

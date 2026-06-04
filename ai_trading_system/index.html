@@ -156,16 +156,72 @@
             <span class="text-xs text-slate-400 font-mono">FETCHING QUANT SIGNALS...</span>
         </div>
 
-        <!-- Signal Waterfall Container -->
-        <div id="signal-wall" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Cards Rendered Dynamically -->
-        </div>
+        <!-- Main Layout Split -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+            
+            <!-- Left Side: Signal Wall (3/4 width on large screens) -->
+            <div class="lg:col-span-3 flex flex-col space-y-6">
+                <!-- Signal Waterfall Container -->
+                <div id="signal-wall" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Cards Rendered Dynamically -->
+                </div>
 
-        <!-- Empty Signal State -->
-        <div id="empty-state" class="hidden bg-slate-900/20 border border-slate-800 border-dashed rounded-xl py-16 text-center">
-            <span class="text-3xl">📭</span>
-            <h3 class="text-sm font-bold text-slate-400 mt-2">目前沒有任何信號資料</h3>
-            <p class="text-xs text-slate-500 mt-1">請確保後端 python 監聽引擎正常執行並寫入資料庫。</p>
+                <!-- Empty Signal State -->
+                <div id="empty-state" class="hidden bg-slate-900/20 border border-slate-800 border-dashed rounded-xl py-16 text-center">
+                    <span class="text-3xl">📭</span>
+                    <h3 class="text-sm font-bold text-slate-400 mt-2">目前沒有任何信號資料</h3>
+                    <p class="text-xs text-slate-500 mt-1">請確保後端 python 監聽引擎正常執行並寫入資料庫。</p>
+                </div>
+            </div>
+            
+            <!-- Right Side: Stock Hub & Whitelist Manager (1/4 width on large screens) -->
+            <div class="lg:col-span-1 flex flex-col space-y-6">
+                
+                <!-- Whitelist Manager Card -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5 flex flex-col space-y-4">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center justify-between">
+                        <span>🏷️ 自訂監控股票名單</span>
+                    </h3>
+                    <p class="text-[11px] text-slate-500">更新名單後，後端 AI 將自動套用此監控清單過濾新聞。</p>
+                    
+                    <!-- Tags Container -->
+                    <div id="whitelist-tags-container" class="flex flex-wrap gap-2 min-h-[50px] p-2 bg-slate-950/60 rounded-lg border border-slate-850">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    
+                    <!-- Add Tag Input -->
+                    <div class="flex space-x-2">
+                        <input type="text" id="new-tag-input" placeholder="新關鍵字 (如: TSLA)" class="flex-grow bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-mono">
+                        <button onclick="addWhitelistTag()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg font-semibold transition">+</button>
+                    </div>
+                    
+                    <!-- Save Button -->
+                    <button id="save-whitelist-btn" onclick="saveWhitelistToDB()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition mt-2">
+                        同步至雲端
+                    </button>
+                </div>
+
+                <!-- TradingView Market Chart Card -->
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-5 flex flex-col space-y-4">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center justify-between">
+                        <span>📈 即時個股行情</span>
+                    </h3>
+                    
+                    <!-- Quick Stock Selector -->
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="loadTradingViewChart('NVDA')" class="px-2.5 py-1 bg-slate-850 hover:bg-slate-700 text-[10px] rounded text-slate-300 font-mono font-semibold border border-slate-800 transition duration-200">NVDA</button>
+                        <button onclick="loadTradingViewChart('TSLA')" class="px-2.5 py-1 bg-slate-850 hover:bg-slate-700 text-[10px] rounded text-slate-300 font-mono font-semibold border border-slate-800 transition duration-200">TSLA</button>
+                        <button onclick="loadTradingViewChart('2330')" class="px-2.5 py-1 bg-slate-850 hover:bg-slate-700 text-[10px] rounded text-slate-300 font-mono font-semibold border border-slate-800 transition duration-200">台積電</button>
+                        <button onclick="loadTradingViewChart('2454')" class="px-2.5 py-1 bg-slate-850 hover:bg-slate-700 text-[10px] rounded text-slate-300 font-mono font-semibold border border-slate-800 transition duration-200">聯發科</button>
+                    </div>
+                    
+                    <!-- Widget Container -->
+                    <div id="tradingview-widget-container" class="w-full h-[220px] bg-slate-950 rounded-lg overflow-hidden border border-slate-850 flex items-center justify-center text-xs text-slate-500 font-mono">
+                        載入中...
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </main>
@@ -182,11 +238,23 @@
         let supabaseKey = '';
         let filterHighImpact = false;
         let activeInterval = null;
+        let whitelistTags = [];
 
         // On Load Initial Setup
         window.addEventListener('DOMContentLoaded', () => {
             loadConfig();
             setupAutoRefresh();
+            loadTradingViewChart('NVDA'); // Default chart load
+            
+            // Add Enter key event listener to input
+            const tagInput = document.getElementById('new-tag-input');
+            if (tagInput) {
+                tagInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        addWhitelistTag();
+                    }
+                });
+            }
         });
 
         function loadConfig() {
@@ -206,6 +274,7 @@
                 
                 document.getElementById('connection-warning').classList.add('hidden');
                 fetchData();
+                loadWhitelistUI();
             } else {
                 statusLabel.innerText = "待設定";
                 statusLabel.className = "text-xs text-amber-500 font-mono";
@@ -238,6 +307,226 @@
             
             loadConfig();
             document.getElementById('signal-wall').innerHTML = '';
+        }
+
+        async function loadWhitelistUI() {
+            if (!supabaseUrl || !supabaseKey) return;
+            const container = document.getElementById('whitelist-tags-container');
+            container.innerHTML = `<span class="text-[10px] text-slate-500 font-mono">載入中...</span>`;
+            
+            try {
+                const url = `${supabaseUrl}/rest/v1/system_config?key=eq.white_list`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                let rawValue = '';
+                if (Array.isArray(data) && data.length > 0) {
+                    rawValue = data[0].value || '';
+                }
+                
+                whitelistTags = rawValue.split(',')
+                    .map(t => t.trim())
+                    .filter(t => t.length > 0);
+                
+                renderWhitelistTags();
+            } catch (err) {
+                console.error("載入自訂清單失敗:", err);
+                container.innerHTML = `<span class="text-[10px] text-red-400 font-mono">載入失敗: ${err.message}</span>`;
+            }
+        }
+
+        function renderWhitelistTags() {
+            const container = document.getElementById('whitelist-tags-container');
+            if (whitelistTags.length === 0) {
+                container.innerHTML = `<span class="text-[10px] text-slate-500 font-mono">無自訂清單，請新增關鍵字</span>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            whitelistTags.forEach(tag => {
+                const tagEl = document.createElement('div');
+                tagEl.className = "group flex items-center bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-md px-2 py-1 text-xs text-slate-300 font-mono cursor-pointer transition select-none hover:bg-slate-850";
+                
+                tagEl.addEventListener('click', (e) => {
+                    if (e.target.closest('.delete-tag-btn')) return;
+                    loadTradingViewChart(tag);
+                });
+
+                const isTicker = /^[A-Z0-9\u4e00-\u9fa5]{2,6}$/.test(tag);
+                let labelHtml = '';
+                if (isTicker) {
+                    labelHtml = `<span class="mr-1 opacity-60">📈</span>`;
+                }
+                
+                tagEl.innerHTML = `
+                    ${labelHtml}
+                    <span class="mr-1.5 font-medium">${tag}</span>
+                    <button class="delete-tag-btn text-slate-500 hover:text-red-400 font-bold transition ml-0.5 text-[10px] focus:outline-none" aria-label="Delete tag">✕</button>
+                `;
+                
+                const deleteBtn = tagEl.querySelector('.delete-tag-btn');
+                deleteBtn.addEventListener('click', () => {
+                    removeWhitelistTag(tag);
+                });
+                
+                container.appendChild(tagEl);
+            });
+        }
+
+        function addWhitelistTag() {
+            const input = document.getElementById('new-tag-input');
+            const val = input.value.trim();
+            if (!val) return;
+            
+            if (whitelistTags.includes(val)) {
+                alert("關鍵字已存在");
+                return;
+            }
+            
+            whitelistTags.push(val);
+            input.value = '';
+            renderWhitelistTags();
+        }
+
+        function removeWhitelistTag(tag) {
+            whitelistTags = whitelistTags.filter(t => t !== tag);
+            renderWhitelistTags();
+        }
+
+        async function saveWhitelistToDB() {
+            if (!supabaseUrl || !supabaseKey) {
+                alert("請先設定 Supabase URL 與 Key");
+                return;
+            }
+            
+            const btn = document.getElementById('save-whitelist-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "同步中...";
+            btn.disabled = true;
+            
+            try {
+                const url = `${supabaseUrl}/rest/v1/system_config?key=eq.white_list`;
+                const valueStr = whitelistTags.join(',');
+                
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        value: valueStr,
+                        updated_at: new Date().toISOString()
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Status ${response.status}`);
+                }
+                
+                btn.className = "w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-lg text-xs font-bold transition mt-2 shadow-lg shadow-emerald-500/25";
+                btn.innerText = "✓ 同步成功";
+                
+                setTimeout(() => {
+                    btn.className = "w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition mt-2";
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 2000);
+                
+            } catch (err) {
+                console.error("同步至雲端失敗:", err);
+                alert(`同步失敗: ${err.message}`);
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function getTradingViewSymbol(symbol) {
+            const clean = symbol.trim().toUpperCase();
+            
+            if (clean === '2330' || clean === '台積電') return 'TWSE:2330';
+            if (clean === '2454' || clean === '聯發科') return 'TWSE:2454';
+            if (clean === 'NVDA' || clean === '輝達') return 'NASDAQ:NVDA';
+            if (clean === 'TSLA' || clean === '特斯拉') return 'NASDAQ:TSLA';
+            if (clean === 'FED' || clean === '聯準會') return 'FRED:FEDFUNDS';
+            if (clean === 'CPI') return 'FRED:CPIAUCSL';
+            if (clean === 'US10Y' || clean === '美債' || clean === '非農') return 'TVC:US10Y';
+            
+            if (/^\d{4}$/.test(clean)) {
+                return `TWSE:${clean}`;
+            }
+            if (/^\d{4}\.TW$/i.test(clean)) {
+                return `TWSE:${clean.split('.')[0]}`;
+            }
+            if (/^[A-Z]{1,5}$/.test(clean)) {
+                const nasdaqSymbols = ['AAPL', 'MSFT', 'AMZN', 'GOOGL', 'GOOG', 'META', 'NFLX', 'AMD', 'INTC', 'QCOM'];
+                if (nasdaqSymbols.includes(clean)) {
+                    return `NASDAQ:${clean}`;
+                }
+                return `NASDAQ:${clean}`;
+            }
+            return clean;
+        }
+
+        function loadTradingViewChart(symbol) {
+            const container = document.getElementById('tradingview-widget-container');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const widgetDiv = document.createElement('div');
+            widgetDiv.className = 'tradingview-widget-container__widget';
+            container.appendChild(widgetDiv);
+            
+            const mappedSymbol = getTradingViewSymbol(symbol);
+            
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
+            script.async = true;
+            
+            const config = {
+                "symbol": mappedSymbol,
+                "width": "100%",
+                "height": "100%",
+                "locale": "zh_TW",
+                "dateRange": "12M",
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "autosize": true,
+                "largeChartUrl": ""
+            };
+            script.innerHTML = JSON.stringify(config);
+            container.appendChild(script);
+        }
+
+        function highlightKeywords(text, keywords) {
+            if (!text || !keywords || keywords.length === 0) return text;
+            
+            const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length);
+            let highlighted = text;
+            
+            sortedKeywords.forEach(kw => {
+                if (!kw || kw.length < 2) return;
+                
+                const escapedKw = kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                const regex = new RegExp(`(${escapedKw})`, 'gi');
+                
+                highlighted = highlighted.replace(regex, `<span class="text-emerald-400 font-semibold underline cursor-pointer hover:text-emerald-300 transition duration-150" onclick="loadTradingViewChart('$1')">$1</span>`);
+            });
+            
+            return highlighted;
         }
 
         function setFilter(highImpactOnly) {
@@ -429,15 +718,15 @@
                             
                             <!-- AI Smart 30-word Summary -->
                             <h3 class="text-base font-bold text-slate-100 leading-relaxed mb-2">
-                                ${sig.ai_summary || '無摘要資訊'}
+                                ${highlightKeywords(sig.ai_summary || '無摘要資訊', whitelistTags)}
                             </h3>
                             
                             <!-- AI evaluation reason -->
-                            ${reasonText ? `<p class="text-xs text-slate-400 bg-slate-950/40 rounded p-2 border border-slate-850/60 my-2 leading-relaxed">${reasonText}</p>` : ''}
+                            ${reasonText ? `<p class="text-xs text-slate-400 bg-slate-950/40 rounded p-2 border border-slate-850/60 my-2 leading-relaxed">${highlightKeywords(reasonText, whitelistTags)}</p>` : ''}
                             
                             <!-- Original Title -->
                             <p class="text-xs text-slate-500 line-clamp-2 italic mb-4">
-                                原始新聞：${sig.original_title || '無標題'}
+                                原始新聞：${highlightKeywords(sig.original_title || '無標題', whitelistTags)}
                             </p>
                             
                             <!-- Bottom row: Footer Info -->
