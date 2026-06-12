@@ -88,20 +88,5 @@ window.crawledData = [
     "last_seen": 1781101257,
     "source": "Threads Web",
     "first_seen": 1781036457
-  },
-  {
-    "id": "DZX8cFRj4h4",
-    "username": "tomamy88",
-    "user_url": "https://www.threads.com/@tomamy88",
-    "text": "Killer Joy · CNBLUE",
-    "url": "https://www.threads.com/@tomamy88/post/DZX8cFRj4h4",
-    "likes": 0,
-    "replies": 0,
-    "time": 1781029257,
-    "time_str": "20小時",
-    "theme": "詐騙",
-    "last_seen": 1781101257,
-    "source": "Threads Web",
-    "first_seen": 1781029257
   }
 ];
