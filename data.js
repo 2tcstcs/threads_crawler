@@ -73,20 +73,5 @@ window.crawledData = [
     "last_seen": 1781101257,
     "source": "Threads Web",
     "first_seen": 1781054457
-  },
-  {
-    "id": "DZYKkekk2uC",
-    "username": "roseprry54",
-    "user_url": "https://www.threads.com/@roseprry54",
-    "text": "18小時",
-    "url": "https://www.threads.com/@roseprry54/post/DZYKkekk2uC",
-    "likes": 0,
-    "replies": 0,
-    "time": 1781036457,
-    "time_str": "18小時",
-    "theme": "詐騙",
-    "last_seen": 1781101257,
-    "source": "Threads Web",
-    "first_seen": 1781036457
   }
 ];
