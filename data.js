@@ -178,50 +178,5 @@ window.crawledData = [
     "last_seen": 1782393091,
     "source": "Threads Web",
     "first_seen": 1782335491
-  },
-  {
-    "id": "DZ-aAvxAUX3",
-    "username": "lion.1679701",
-    "user_url": "https://www.threads.com/@lion.1679701",
-    "text": "20小時",
-    "url": "https://www.threads.com/@lion.1679701/post/DZ-aAvxAUX3",
-    "likes": 0,
-    "replies": 0,
-    "time": 1782321091,
-    "time_str": "20小時",
-    "theme": "詐騙",
-    "last_seen": 1782393091,
-    "source": "Threads Web",
-    "first_seen": 1782321091
-  },
-  {
-    "id": "DZ-bxKIjzmJ",
-    "username": "cheng_c.3",
-    "user_url": "https://www.threads.com/@cheng_c.3",
-    "text": "20小時",
-    "url": "https://www.threads.com/@cheng_c.3/post/DZ-bxKIjzmJ",
-    "likes": 0,
-    "replies": 0,
-    "time": 1782321091,
-    "time_str": "20小時",
-    "theme": "詐騙",
-    "last_seen": 1782393091,
-    "source": "Threads Web",
-    "first_seen": 1782321091
-  },
-  {
-    "id": "DZ-eurkAaYn",
-    "username": "junrug329",
-    "user_url": "https://www.threads.com/@junrug329",
-    "text": "哈囉大家好我是fifi 手作甜點杜拜巧克力Q餅\n🔆目前活動6/25即日起冷凍免運卷 限量100張🔆\n🫶🏻前100位名額下單免運唷 請各位把握機會🫶🏻\n （最低數量2顆，1顆不出貨‼️）\n ❤️歡迎大家下單訂購唷❤️\n ‼️僅此帳號 我們不是詐騙 杜絕詐騙‼️",
-    "url": "https://www.threads.com/@junrug329/post/DZ-eurkAaYn",
-    "likes": 0,
-    "replies": 0,
-    "time": 1782321091,
-    "time_str": "20小時",
-    "theme": "詐騙",
-    "last_seen": 1782393091,
-    "source": "Threads Web",
-    "first_seen": 1782321091
   }
 ];
