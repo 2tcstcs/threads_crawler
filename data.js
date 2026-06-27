@@ -148,20 +148,5 @@ window.crawledData = [
     "last_seen": 1782393091,
     "source": "Threads Web",
     "first_seen": 1782349891
-  },
-  {
-    "id": "DZ_IF_AElgy",
-    "username": "norskkih9",
-    "user_url": "https://www.threads.com/@norskkih9",
-    "text": "14小時",
-    "url": "https://www.threads.com/@norskkih9/post/DZ_IF_AElgy",
-    "likes": 0,
-    "replies": 0,
-    "time": 1782342691,
-    "time_str": "14小時",
-    "theme": "詐騙",
-    "last_seen": 1782393091,
-    "source": "Threads Web",
-    "first_seen": 1782342691
   }
 ];
