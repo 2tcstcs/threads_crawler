@@ -25,7 +25,7 @@ window.crawledData = [
     "time": 1783019362,
     "time_str": "vogue0201",
     "theme": "詐騙",
-    "last_seen": 1783019362,
+    "last_seen": 1783195745,
     "source": "Threads Web",
     "first_seen": 1783019362
   }
