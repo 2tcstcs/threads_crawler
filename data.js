@@ -1,17 +1,1 @@
-window.crawledData = [
-  {
-    "id": "DaUBIB2k5tn",
-    "username": "06l______",
-    "user_url": "https://www.threads.com/@06l______",
-    "text": "我的存款怎麼一閃一閃的？",
-    "url": "https://www.threads.com/@06l______/post/DaUBIB2k5tn",
-    "likes": 0,
-    "replies": 0,
-    "time": 1783045565,
-    "time_str": "9小時",
-    "theme": "銀行",
-    "last_seen": 1783093724,
-    "source": "Threads Web",
-    "first_seen": 1783045565
-  }
-];
+window.crawledData = [];
