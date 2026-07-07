@@ -10,7 +10,7 @@ window.crawledData = [
     "time": 1783442469,
     "time_str": "3小時",
     "theme": "詐騙",
-    "last_seen": 1783453269,
+    "last_seen": 1783458945,
     "source": "Threads Web",
     "first_seen": 1783442469
   },
