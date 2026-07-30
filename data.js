@@ -1,1 +1,17 @@
-window.crawledData = [];
+window.crawledData = [
+  {
+    "id": "DbYrzURkojd",
+    "username": "frz1r.0",
+    "user_url": "https://www.threads.com/@frz1r.0",
+    "text": "13小時",
+    "url": "https://www.threads.com/@frz1r.0/post/DbYrzURkojd",
+    "likes": 0,
+    "replies": 0,
+    "time": 1785349668,
+    "time_str": "13小時",
+    "theme": "詐騙",
+    "last_seen": 1785396468,
+    "source": "Threads Web",
+    "first_seen": 1785349668
+  }
+];
