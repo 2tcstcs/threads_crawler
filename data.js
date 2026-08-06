@@ -1,17 +1,1 @@
-window.crawledData = [
-  {
-    "id": "DbkmAHCiftz",
-    "username": "stevenfan1193",
-    "user_url": "https://www.threads.com/@stevenfan1193",
-    "text": "6小時",
-    "url": "https://www.threads.com/@stevenfan1193/post/DbkmAHCiftz",
-    "likes": 0,
-    "replies": 0,
-    "time": 1785749862,
-    "time_str": "6小時",
-    "theme": "詐騙",
-    "last_seen": 1785771462,
-    "source": "Threads Web",
-    "first_seen": 1785749862
-  }
-];
+window.crawledData = [];
