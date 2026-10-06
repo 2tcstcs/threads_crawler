@@ -13,50 +13,5 @@ window.crawledData = [
     "last_seen": 1791066769,
     "source": "Threads Web",
     "first_seen": 1791065389
-  },
-  {
-    "id": "DeCuzflEncL",
-    "username": "mpq0912",
-    "user_url": "https://www.threads.com/@mpq0912",
-    "text": "各位媽咪們幫我帶走🥹\n求求ㄌ⋯⋯🙏",
-    "url": "https://www.threads.com/@mpq0912/post/DeCuzflEncL",
-    "likes": 0,
-    "replies": 0,
-    "time": 1791055969,
-    "time_str": "3小時",
-    "theme": "詐騙",
-    "last_seen": 1791066769,
-    "source": "Threads Web",
-    "first_seen": 1791055969
-  },
-  {
-    "id": "DeCr-dxEwc-",
-    "username": "jellyfish.549741",
-    "user_url": "https://www.threads.com/@jellyfish.549741",
-    "text": "4小時",
-    "url": "https://www.threads.com/@jellyfish.549741/post/DeCr-dxEwc-",
-    "likes": 0,
-    "replies": 0,
-    "time": 1791052369,
-    "time_str": "4小時",
-    "theme": "詐騙",
-    "last_seen": 1791066769,
-    "source": "Threads Web",
-    "first_seen": 1791052369
-  },
-  {
-    "id": "DeCdzxwEpln",
-    "username": "sheep.99242603",
-    "user_url": "https://www.threads.com/@sheep.99242603",
-    "text": "6小時",
-    "url": "https://www.threads.com/@sheep.99242603/post/DeCdzxwEpln",
-    "likes": 0,
-    "replies": 0,
-    "time": 1791045169,
-    "time_str": "6小時",
-    "theme": "詐騙",
-    "last_seen": 1791066769,
-    "source": "Threads Web",
-    "first_seen": 1791045169
   }
 ];
