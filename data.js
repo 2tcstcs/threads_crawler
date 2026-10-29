@@ -1,5 +1,20 @@
 window.crawledData = [
   {
+    "id": "DfEp1BZkutH",
+    "username": "kakigome_oo",
+    "user_url": "https://www.threads.com/@kakigome_oo",
+    "text": "RN失業日記 \nApply咗過百份工，日日等interview call，但全部都係詐騙電話，做香港人真係好撚悲衰🫠",
+    "url": "https://www.threads.com/@kakigome_oo/post/DfEp1BZkutH",
+    "likes": 0,
+    "replies": 0,
+    "time": 1793267170,
+    "time_str": "5小時",
+    "theme": "詐騙",
+    "last_seen": 1793285170,
+    "source": "Threads Web",
+    "first_seen": 1793267170
+  },
+  {
     "id": "DfEMfW3oA2P",
     "username": "a170204",
     "user_url": "https://www.threads.com/@a170204",
