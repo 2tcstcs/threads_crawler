@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DfKj3A8E72j",
+    "username": "le___ciel.drama",
+    "user_url": "https://www.threads.com/@le___ciel.drama",
+    "text": "1. 這集彌度一直在安慰別人&給別人抱抱，主打一個暖心路線🤗\n⁡\n2. 編劇可能以為透過彌度的嘴巴說出各種心靈雞湯，觀眾就會覺得心靈受到洗滌。滿滿的雞湯台詞，我自己是只想快速跳過。\n⁡\n3. 這集是爸爸戲的結束，透過哥哥讓彌度親口說出是因為她，然後南宮再來道歉說是氣話，彌度再抱抱安慰他？就是真的很、不、必！說穿了這些年彌度的付出也不少，真的不要講的都是南宮單方面在付出耶🤗\n⁡\n4. 南宮爸爸是黑道這件事感覺比媽媽是詐騙犯這件事更可以發揮，但只用了一句台詞輕輕帶過？\n⁡\n5. 覺得我會喜歡韓泰勝這個角色是因為角色塑造出的反差很成功。人前是舌燦蓮花、不擇手段的律師，被姊姊講到心坎就淚眼汪汪，可愛死。雖然編劇感覺沒有要寫個好結局給你，但別擔心大家都愛你🫶🏼然後在明洞徘徊的原因只是因為徐柱赫嗎😂還以為跟生父生母有關咧\n⁡\n6. 這集的彌度很多時候都很漂亮，可惜的是已淪為編劇推進劇情的存在，也不知道她現在在做什麼工作？\n⁡\n7. 秀雅說要煮好吃的結果不會殺小卷？？？編劇真的不要為了讓南宮表演自己很會料理而寫這段戲耶🙂還有透過媽媽的嘴巴說什麼南宮把彌度教的很好？？？到底在供蝦毀～～～（抱頭大叫）",
+    "url": "https://www.threads.com/@le___ciel.drama/post/DfKj3A8E72j",
+    "likes": 0,
+    "replies": 0,
+    "time": 1793465720,
+    "time_str": "2小時",
+    "theme": "詐騙",
+    "last_seen": 1793472920,
+    "source": "Threads Web",
+    "first_seen": 1793465720
+  },
+  {
+    "id": "DfKk_dukzsa",
+    "username": "ling_.19",
+    "user_url": "https://www.threads.com/@ling_.19",
+    "text": "想跟大家分享一下最近遇到的事情，也提醒有在經營 3C 商品出租的朋友多留意。\n這次遇到的承租人江X伸，原本是向我租借 OPPO X9 Ultra，雙方也有約定好租借日期、租金及歸還時間。",
+    "url": "https://www.threads.com/@ling_.19/post/DfKk_dukzsa",
+    "likes": 0,
+    "replies": 0,
+    "time": 1793465720,
+    "time_str": "2小時",
+    "theme": "詐騙",
+    "last_seen": 1793472920,
+    "source": "Threads Web",
+    "first_seen": 1793465720
+  },
+  {
     "id": "DfI34ChCOxU",
     "username": "dollstagram.ooak",
     "user_url": "https://www.threads.com/@dollstagram.ooak",
@@ -163,35 +193,5 @@ window.crawledData = [
     "last_seen": 1793260081,
     "source": "Threads Web",
     "first_seen": 1793252881
-  },
-  {
-    "id": "DfC_5EGEouc",
-    "username": "htvh847",
-    "user_url": "https://www.threads.com/@htvh847",
-    "text": "3小時",
-    "url": "https://www.threads.com/@htvh847/post/DfC_5EGEouc",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793211955,
-    "time_str": "3小時",
-    "theme": "詐騙",
-    "last_seen": 1793222755,
-    "source": "Threads Web",
-    "first_seen": 1793211955
-  },
-  {
-    "id": "DfCxqPdnY0f",
-    "username": "wkh58kee",
-    "user_url": "https://www.threads.com/@wkh58kee",
-    "text": "三麗鷗 悠遊卡 盲盒",
-    "url": "https://www.threads.com/@wkh58kee/post/DfCxqPdnY0f",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793204755,
-    "time_str": "5小時",
-    "theme": "詐騙",
-    "last_seen": 1793222755,
-    "source": "Threads Web",
-    "first_seen": 1793204755
   }
 ];
