@@ -1,5 +1,50 @@
 window.crawledData = [
   {
+    "id": "DfQ1jq-mv_D",
+    "username": "aaron___chen___",
+    "user_url": "https://www.threads.com/@aaron___chen___",
+    "text": "請快通知所有使用永豐的朋友\n剛剛帳戶莫名被用臉部掃描確認的狀況轉出10萬\n本人完全沒開app而且沒做任何約定帳戶\n單筆就10萬 銀行目前也沒辦法解釋\n到銀行辦理的時候 也有另一個人遇到一樣的狀況 而且都轉到同一帳戶",
+    "url": "https://www.threads.com/@aaron___chen___/post/DfQ1jq-mv_D",
+    "likes": 0,
+    "replies": 0,
+    "time": 1793673864,
+    "time_str": "25分鐘",
+    "theme": "銀行",
+    "last_seen": 1793675364,
+    "source": "Threads Web",
+    "first_seen": 1793673864
+  },
+  {
+    "id": "DfP55tNj23k",
+    "username": "julianyip84",
+    "user_url": "https://www.threads.com/@julianyip84",
+    "text": "就圖中的amazon.com為例，兩個網址只有一個是真，但普通人是很難即時分辨出真偽。",
+    "url": "https://www.threads.com/@julianyip84/post/DfP55tNj23k",
+    "likes": 0,
+    "replies": 0,
+    "time": 1793642983,
+    "time_str": "9小時",
+    "theme": "詐騙",
+    "last_seen": 1793675383,
+    "source": "Threads Web",
+    "first_seen": 1793642983
+  },
+  {
+    "id": "DfPmjG_jecG",
+    "username": "alfakoi1160",
+    "user_url": "https://www.threads.com/@alfakoi1160",
+    "text": "所有app都正常，就你國泰世華一個在連線異常\n有夠爛的銀行",
+    "url": "https://www.threads.com/@alfakoi1160/post/DfPmjG_jecG",
+    "likes": 0,
+    "replies": 0,
+    "time": 1793635764,
+    "time_str": "11小時",
+    "theme": "銀行",
+    "last_seen": 1793675364,
+    "source": "Threads Web",
+    "first_seen": 1793635764
+  },
+  {
     "id": "DfOtoIVmgZs",
     "username": "_yu_630",
     "user_url": "https://www.threads.com/@_yu_630",
@@ -193,20 +238,5 @@ window.crawledData = [
     "last_seen": 1793484168,
     "source": "Threads Web",
     "first_seen": 1793465720
-  },
-  {
-    "id": "DfI34ChCOxU",
-    "username": "dollstagram.ooak",
-    "user_url": "https://www.threads.com/@dollstagram.ooak",
-    "text": "evelom",
-    "url": "https://www.threads.com/@dollstagram.ooak/post/DfI34ChCOxU",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793406658,
-    "time_str": "43分鐘",
-    "theme": "詐騙",
-    "last_seen": 1793409238,
-    "source": "Threads Web",
-    "first_seen": 1793406658
   }
 ];
