@@ -313,20 +313,5 @@ window.crawledData = [
     "last_seen": 1793547313,
     "source": "Threads Web",
     "first_seen": 1793543713
-  },
-  {
-    "id": "DfLy04HGWqN",
-    "username": "tinags_g74ever",
-    "user_url": "https://www.threads.com/@tinags_g74ever",
-    "text": "大家～～\n我來讓一張朴珍榮A區21排\n原價票，會優先讓給我認識的鳥寶，再來是脆上很活躍我眼熟的ID ?",
-    "url": "https://www.threads.com/@tinags_g74ever/post/DfLy04HGWqN",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793507065,
-    "time_str": "4小時",
-    "theme": "詐騙",
-    "last_seen": 1793521465,
-    "source": "Threads Web",
-    "first_seen": 1793507065
   }
 ];
