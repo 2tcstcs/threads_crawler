@@ -163,35 +163,5 @@ window.crawledData = [
     "last_seen": 1793675364,
     "source": "Threads Web",
     "first_seen": 1793673864
-  },
-  {
-    "id": "DfP55tNj23k",
-    "username": "julianyip84",
-    "user_url": "https://www.threads.com/@julianyip84",
-    "text": "就圖中的amazon.com為例，兩個網址只有一個是真，但普通人是很難即時分辨出真偽。",
-    "url": "https://www.threads.com/@julianyip84/post/DfP55tNj23k",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793642983,
-    "time_str": "9小時",
-    "theme": "詐騙",
-    "last_seen": 1793675383,
-    "source": "Threads Web",
-    "first_seen": 1793642983
-  },
-  {
-    "id": "DfPmjG_jecG",
-    "username": "alfakoi1160",
-    "user_url": "https://www.threads.com/@alfakoi1160",
-    "text": "所有app都正常，就你國泰世華一個在連線異常\n有夠爛的銀行",
-    "url": "https://www.threads.com/@alfakoi1160/post/DfPmjG_jecG",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793635764,
-    "time_str": "11小時",
-    "theme": "銀行",
-    "last_seen": 1793675364,
-    "source": "Threads Web",
-    "first_seen": 1793635764
   }
 ];
