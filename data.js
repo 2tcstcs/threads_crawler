@@ -208,35 +208,5 @@ window.crawledData = [
     "last_seen": 1793620166,
     "source": "Threads Web",
     "first_seen": 1793605766
-  },
-  {
-    "id": "DfOqJocmROt",
-    "username": "thekarolhsieh",
-    "user_url": "https://www.threads.com/@thekarolhsieh",
-    "text": "5小時",
-    "url": "https://www.threads.com/@thekarolhsieh/post/DfOqJocmROt",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793602166,
-    "time_str": "5小時",
-    "theme": "詐騙",
-    "last_seen": 1793620166,
-    "source": "Threads Web",
-    "first_seen": 1793602166
-  },
-  {
-    "id": "DfOgxP4k7eE",
-    "username": "gobby0912",
-    "user_url": "https://www.threads.com/@gobby0912",
-    "text": "剛去永豐金銀行繳費，超多人等超久，最後才知道，收到認股的單子去繳費，記得要先在單子上要先填寫國字繳費金額，好讓服務人員做事方便會更快速.不然很浪費時間.",
-    "url": "https://www.threads.com/@gobby0912/post/DfOgxP4k7eE",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793598551,
-    "time_str": "6小時",
-    "theme": "銀行",
-    "last_seen": 1793620151,
-    "source": "Threads Web",
-    "first_seen": 1793598551
   }
 ];
