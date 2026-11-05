@@ -238,20 +238,5 @@ window.crawledData = [
     "last_seen": 1793620151,
     "source": "Threads Web",
     "first_seen": 1793598551
-  },
-  {
-    "id": "DfN991iHxqH",
-    "username": "crochetcarat_7",
-    "user_url": "https://www.threads.com/@crochetcarat_7",
-    "text": "想請問一下有人是Line聯絡 MIRAI STC CLINIC \n成功購買猛健樂的嗎",
-    "url": "https://www.threads.com/@crochetcarat_7/post/DfN991iHxqH",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793578889,
-    "time_str": "3小時",
-    "theme": "詐騙",
-    "last_seen": 1793589689,
-    "source": "Threads Web",
-    "first_seen": 1793578889
   }
 ];
