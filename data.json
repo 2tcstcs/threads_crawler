@@ -43,35 +43,5 @@
     "last_seen": 1793749639,
     "source": "Threads Web",
     "first_seen": 1793731639
-  },
-  {
-    "id": "DfRtU8Pn6MT",
-    "username": "_aidanwu",
-    "user_url": "https://www.threads.com/@_aidanwu",
-    "text": "永封銀行的阿丁同仁，請 AI 寫了一段模擬轉帳的測試腳本，直接在正式環境 Run，迴圈條件也沒控制好……",
-    "url": "https://www.threads.com/@_aidanwu/post/DfRtU8Pn6MT",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793703089,
-    "time_str": "37分鐘",
-    "theme": "銀行",
-    "last_seen": 1793705309,
-    "source": "Threads Web",
-    "first_seen": 1793703089
-  },
-  {
-    "id": "DfRkLbBIJ4h",
-    "username": "reaves15au",
-    "user_url": "https://www.threads.com/@reaves15au",
-    "text": "發現「新網銀交易系統」出現程式異常\n才導致部分帳戶發生不明轉出款項情事\n目前銀行方面已掌握故障原因並暫停服務\n後續已無相同狀況發生",
-    "url": "https://www.threads.com/@reaves15au/post/DfRkLbBIJ4h",
-    "likes": 0,
-    "replies": 0,
-    "time": 1793701709,
-    "time_str": "1小時",
-    "theme": "銀行",
-    "last_seen": 1793705309,
-    "source": "Threads Web",
-    "first_seen": 1793701709
   }
 ]
