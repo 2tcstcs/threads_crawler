@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DfeIaV2GDtA",
+    "username": "penny_4e",
+    "user_url": "https://www.threads.com/@penny_4e",
+    "text": "鼎泰豐",
+    "url": "https://www.threads.com/@penny_4e/post/DfeIaV2GDtA",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794120817,
+    "time_str": "4小時",
+    "theme": "詐騙",
+    "last_seen": 1794135217,
+    "source": "Threads Web",
+    "first_seen": 1794120817
+  },
+  {
+    "id": "Dfd7KN0lIci",
+    "username": "victorchiu1003",
+    "user_url": "https://www.threads.com/@victorchiu1003",
+    "text": "卡牌圈真的很黑暗\n捲款兩億小羊 \n再來必中包Cardopia 卡托邦\n今天台中皮老闆（美版代購）\n也被上游捲款兩千多萬",
+    "url": "https://www.threads.com/@victorchiu1003/post/Dfd7KN0lIci",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794113617,
+    "time_str": "6小時",
+    "theme": "詐騙",
+    "last_seen": 1794135217,
+    "source": "Threads Web",
+    "first_seen": 1794113617
+  },
+  {
     "id": "DfdJ4btk56h",
     "username": "cc_0711a",
     "user_url": "https://www.threads.com/@cc_0711a",
