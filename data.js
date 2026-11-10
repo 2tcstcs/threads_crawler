@@ -358,20 +358,5 @@ window.crawledData = [
     "last_seen": 1794062508,
     "source": "Threads Web",
     "first_seen": 1794022908
-  },
-  {
-    "id": "Dfa1OztE0z7",
-    "username": "tracy_7409",
-    "user_url": "https://www.threads.com/@tracy_7409",
-    "text": "家扶基金會",
-    "url": "https://www.threads.com/@tracy_7409/post/Dfa1OztE0z7",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794011220,
-    "time_str": "1小時",
-    "theme": "詐騙",
-    "last_seen": 1794014820,
-    "source": "Threads Web",
-    "first_seen": 1794011220
   }
 ];
