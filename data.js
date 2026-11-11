@@ -1,5 +1,50 @@
 window.crawledData = [
   {
+    "id": "DflV32OkpSM",
+    "username": "pan_pan_hoonist",
+    "user_url": "https://www.threads.com/@pan_pan_hoonist",
+    "text": "後來查了一下才發現，數位發展部資通安全署早就發布過公告，提醒民眾有詐騙集團冒用該署名義打電話，謊稱門號遭冒用或涉及異常。",
+    "url": "https://www.threads.com/@pan_pan_hoonist/post/DflV32OkpSM",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794361920,
+    "time_str": "31分鐘",
+    "theme": "詐騙",
+    "last_seen": 1794363780,
+    "source": "Threads Web",
+    "first_seen": 1794361920
+  },
+  {
+    "id": "DflUUv0o_Qb",
+    "username": "legend_2225_",
+    "user_url": "https://www.threads.com/@legend_2225_",
+    "text": "真的是沒想到詐騙集團越來越聰明⋯⋯⋯\n前一陣子因為也有發生過一次所以有在注意，昨天看到這個帳號進來時本來有猶豫，但想著問題也答對所以就放人了，但還是有在堤防，果然隔天就現出原型⋯⋯⋯⋯",
+    "url": "https://www.threads.com/@legend_2225_/post/DflUUv0o_Qb",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794361080,
+    "time_str": "45分鐘",
+    "theme": "詐騙",
+    "last_seen": 1794363780,
+    "source": "Threads Web",
+    "first_seen": 1794361080
+  },
+  {
+    "id": "DfkqETnE8ka",
+    "username": "owlvie",
+    "user_url": "https://www.threads.com/@owlvie",
+    "text": "10/6我主動問才跟我說剛收到要回台灣，\n後來10/14問沒回，\n10/19再問才回，\n10/21跟我要取貨資訊，\n10/29我又再問什麼時候出貨？\n10/30還傳給我海外貨運資訊解釋剛好連假卡到。\n11/6我再問才跟我說晚點寄出\n11/10收到商品",
+    "url": "https://www.threads.com/@owlvie/post/DfkqETnE8ka",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794342180,
+    "time_str": "6小時",
+    "theme": "詐騙",
+    "last_seen": 1794363780,
+    "source": "Threads Web",
+    "first_seen": 1794342180
+  },
+  {
     "id": "DfkVj4Fn_oy",
     "username": "_meng.stagram",
     "user_url": "https://www.threads.com/@_meng.stagram",
@@ -13,6 +58,21 @@ window.crawledData = [
     "last_seen": 1794348146,
     "source": "Threads Web",
     "first_seen": 1794330146
+  },
+  {
+    "id": "DfkUKwMkyLY",
+    "username": "cc__y19",
+    "user_url": "https://www.threads.com/@cc__y19",
+    "text": "10小時",
+    "url": "https://www.threads.com/@cc__y19/post/DfkUKwMkyLY",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794327780,
+    "time_str": "10小時",
+    "theme": "詐騙",
+    "last_seen": 1794363780,
+    "source": "Threads Web",
+    "first_seen": 1794327780
   },
   {
     "id": "DfeIaV2GDtA",
@@ -43,35 +103,5 @@ window.crawledData = [
     "last_seen": 1794135217,
     "source": "Threads Web",
     "first_seen": 1794113617
-  },
-  {
-    "id": "DfdJ4btk56h",
-    "username": "cc_0711a",
-    "user_url": "https://www.threads.com/@cc_0711a",
-    "text": "詐騙死全家",
-    "url": "https://www.threads.com/@cc_0711a/post/DfdJ4btk56h",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794089950,
-    "time_str": "5小時",
-    "theme": "詐騙",
-    "last_seen": 1794107950,
-    "source": "Threads Web",
-    "first_seen": 1794089950
-  },
-  {
-    "id": "DfdJe4ykjoC",
-    "username": "b4lu26eporo",
-    "user_url": "https://www.threads.com/@b4lu26eporo",
-    "text": "浪人祭",
-    "url": "https://www.threads.com/@b4lu26eporo/post/DfdJe4ykjoC",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794089709,
-    "time_str": "1小時",
-    "theme": "詐騙",
-    "last_seen": 1794093309,
-    "source": "Threads Web",
-    "first_seen": 1794089709
   }
 ];
