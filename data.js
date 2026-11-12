@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DfooF5flJaF",
+    "username": "ian__iceiceice",
+    "user_url": "https://www.threads.com/@ian__iceiceice",
+    "text": "Mazda瑞達汽車 也算是大公司個資外洩怎麼處理反應還這麼遲鈍",
+    "url": "https://www.threads.com/@ian__iceiceice/post/DfooF5flJaF",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794475662,
+    "time_str": "4小時",
+    "theme": "詐騙",
+    "last_seen": 1794490062,
+    "source": "Threads Web",
+    "first_seen": 1794475662
+  },
+  {
+    "id": "Dfol7ojIOrK",
+    "username": "chaidog2008",
+    "user_url": "https://www.threads.com/@chaidog2008",
+    "text": "欣亞是不是被駭客打了\n連續收到兩封感覺是詐騙的email\n最可怕的是上面還有姓名地址電話\n到底leak多少了",
+    "url": "https://www.threads.com/@chaidog2008/post/Dfol7ojIOrK",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794472062,
+    "time_str": "5小時",
+    "theme": "詐騙",
+    "last_seen": 1794490062,
+    "source": "Threads Web",
+    "first_seen": 1794472062
+  },
+  {
     "id": "DfoCiLDmaOO",
     "username": "nananana.1004",
     "user_url": "https://www.threads.com/@nananana.1004",
