@@ -1,5 +1,20 @@
 window.crawledData = [
   {
+    "id": "DfoCiLDmaOO",
+    "username": "nananana.1004",
+    "user_url": "https://www.threads.com/@nananana.1004",
+    "text": "BTS",
+    "url": "https://www.threads.com/@nananana.1004/post/DfoCiLDmaOO",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794455563,
+    "time_str": "1小時",
+    "theme": "詐騙",
+    "last_seen": 1794459163,
+    "source": "Threads Web",
+    "first_seen": 1794455563
+  },
+  {
     "id": "DfnF4f5k23w",
     "username": "gaweiteacher1314520",
     "user_url": "https://www.threads.com/@gaweiteacher1314520",
