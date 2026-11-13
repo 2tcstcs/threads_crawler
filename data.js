@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DfqzZRsIGLs",
+    "username": "huahua_chaio",
+    "user_url": "https://www.threads.com/@huahua_chaio",
+    "text": "某香水盲勺🍄你如果有想買的意向他會催你匯款，但下單後要排單大約2-3個月\n（原因是你給他錢他才有錢退給別人）\n然後香水都是假貨不用懷疑、價格也不便宜喔",
+    "url": "https://www.threads.com/@huahua_chaio/post/DfqzZRsIGLs",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794547180,
+    "time_str": "5小時",
+    "theme": "詐騙",
+    "last_seen": 1794565180,
+    "source": "Threads Web",
+    "first_seen": 1794547180
+  },
+  {
+    "id": "Dfp3H18EqRZ",
+    "username": "peterfr_22",
+    "user_url": "https://www.threads.com/@peterfr_22",
+    "text": "請各位廣大脆友幫幫忙",
+    "url": "https://www.threads.com/@peterfr_22/post/Dfp3H18EqRZ",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794514780,
+    "time_str": "14小時",
+    "theme": "詐騙",
+    "last_seen": 1794565180,
+    "source": "Threads Web",
+    "first_seen": 1794514780
+  },
+  {
     "id": "DfpZS6qEw7S",
     "username": "newneee_",
     "user_url": "https://www.threads.com/@newneee_",
