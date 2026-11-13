@@ -1,5 +1,20 @@
 window.crawledData = [
   {
+    "id": "DfpZS6qEw7S",
+    "username": "newneee_",
+    "user_url": "https://www.threads.com/@newneee_",
+    "text": "問問看有人要看FLARE U嗎\nVIP 3排×1 中間兩區\n已取票 僅限北捷面交\n福利全讓 $5880+取票手續費$30",
+    "url": "https://www.threads.com/@newneee_/post/DfpZS6qEw7S",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794500216,
+    "time_str": "10小時",
+    "theme": "詐騙",
+    "last_seen": 1794536216,
+    "source": "Threads Web",
+    "first_seen": 1794500216
+  },
+  {
     "id": "DfooF5flJaF",
     "username": "ian__iceiceice",
     "user_url": "https://www.threads.com/@ian__iceiceice",
