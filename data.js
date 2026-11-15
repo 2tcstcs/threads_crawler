@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DfwqGzfDxNT",
+    "username": "hkmalls",
+    "user_url": "https://www.threads.com/@hkmalls",
+    "text": "預計約241億港元的淨額的\n其餘分配\n包括約87億港元用於償還債務\n（包括優先票據、銀行貸款、利息及永續證券遞延分派）\n餘下約72億港元用於\n為發展項目儲備提供資金\n並加快其發展",
+    "url": "https://www.threads.com/@hkmalls/post/DfwqGzfDxNT",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794741593,
+    "time_str": "19分鐘",
+    "theme": "銀行",
+    "last_seen": 1794742733,
+    "source": "Threads Web",
+    "first_seen": 1794741593
+  },
+  {
+    "id": "DfwSDV3knh9",
+    "username": "eyeyechou",
+    "user_url": "https://www.threads.com/@eyeyechou",
+    "text": "3小時",
+    "url": "https://www.threads.com/@eyeyechou/post/DfwSDV3knh9",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794731949,
+    "time_str": "3小時",
+    "theme": "詐騙",
+    "last_seen": 1794742749,
+    "source": "Threads Web",
+    "first_seen": 1794731949
+  },
+  {
     "id": "DfuR4hoHXOd",
     "username": "snow_cool06",
     "user_url": "https://www.threads.com/@snow_cool06",
@@ -223,50 +253,5 @@ window.crawledData = [
     "last_seen": 1794536216,
     "source": "Threads Web",
     "first_seen": 1794500216
-  },
-  {
-    "id": "DfooF5flJaF",
-    "username": "ian__iceiceice",
-    "user_url": "https://www.threads.com/@ian__iceiceice",
-    "text": "Mazda瑞達汽車 也算是大公司個資外洩怎麼處理反應還這麼遲鈍",
-    "url": "https://www.threads.com/@ian__iceiceice/post/DfooF5flJaF",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794475662,
-    "time_str": "4小時",
-    "theme": "詐騙",
-    "last_seen": 1794490062,
-    "source": "Threads Web",
-    "first_seen": 1794475662
-  },
-  {
-    "id": "Dfol7ojIOrK",
-    "username": "chaidog2008",
-    "user_url": "https://www.threads.com/@chaidog2008",
-    "text": "欣亞是不是被駭客打了\n連續收到兩封感覺是詐騙的email\n最可怕的是上面還有姓名地址電話\n到底leak多少了",
-    "url": "https://www.threads.com/@chaidog2008/post/Dfol7ojIOrK",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794472062,
-    "time_str": "5小時",
-    "theme": "詐騙",
-    "last_seen": 1794490062,
-    "source": "Threads Web",
-    "first_seen": 1794472062
-  },
-  {
-    "id": "DfoCiLDmaOO",
-    "username": "nananana.1004",
-    "user_url": "https://www.threads.com/@nananana.1004",
-    "text": "BTS",
-    "url": "https://www.threads.com/@nananana.1004/post/DfoCiLDmaOO",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794455563,
-    "time_str": "1小時",
-    "theme": "詐騙",
-    "last_seen": 1794459163,
-    "source": "Threads Web",
-    "first_seen": 1794455563
   }
 ];
