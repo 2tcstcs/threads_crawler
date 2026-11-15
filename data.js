@@ -223,20 +223,5 @@ window.crawledData = [
     "last_seen": 1794565180,
     "source": "Threads Web",
     "first_seen": 1794547180
-  },
-  {
-    "id": "Dfp3H18EqRZ",
-    "username": "peterfr_22",
-    "user_url": "https://www.threads.com/@peterfr_22",
-    "text": "請各位廣大脆友幫幫忙",
-    "url": "https://www.threads.com/@peterfr_22/post/Dfp3H18EqRZ",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794514780,
-    "time_str": "14小時",
-    "theme": "詐騙",
-    "last_seen": 1794565180,
-    "source": "Threads Web",
-    "first_seen": 1794514780
   }
 ];
