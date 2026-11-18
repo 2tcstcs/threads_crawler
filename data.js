@@ -75,6 +75,21 @@ window.crawledData = [
     "first_seen": 1794967028
   },
   {
+    "id": "Df3RUJ1nQUZ",
+    "username": "_wei.ttong",
+    "user_url": "https://www.threads.com/@_wei.ttong",
+    "text": "📍11/3 匯款 4,379 元購買兩盒草莓，店家表示約一週到貨，但一週後仍未收到商品，多次詢問後店家自己也無法確認具體出貨時間\n📍11/12因遲遲未出貨，提出退款申請。\n📍11/13店家同意退款，並表示需等會計匯款7 個工作天內會完成。\n📍11/17期間多次詢問退款進度，直到晚上 21:46 才收到退款。",
+    "url": "https://www.threads.com/@_wei.ttong/post/Df3RUJ1nQUZ",
+    "likes": 0,
+    "replies": 0,
+    "time": 1794965570,
+    "time_str": "11小時",
+    "theme": "詐騙",
+    "last_seen": 1795005170,
+    "source": "Threads Web",
+    "first_seen": 1794965570
+  },
+  {
     "id": "Df3DPhQHzGt",
     "username": "wangnyu",
     "user_url": "https://www.threads.com/@wangnyu",
@@ -463,35 +478,5 @@ window.crawledData = [
     "last_seen": 1794831285,
     "source": "Threads Web",
     "first_seen": 1794773685
-  },
-  {
-    "id": "DfwqGzfDxNT",
-    "username": "hkmalls",
-    "user_url": "https://www.threads.com/@hkmalls",
-    "text": "預計約241億港元的淨額的\n其餘分配\n包括約87億港元用於償還債務\n（包括優先票據、銀行貸款、利息及永續證券遞延分派）\n餘下約72億港元用於\n為發展項目儲備提供資金\n並加快其發展",
-    "url": "https://www.threads.com/@hkmalls/post/DfwqGzfDxNT",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794741593,
-    "time_str": "19分鐘",
-    "theme": "銀行",
-    "last_seen": 1794742733,
-    "source": "Threads Web",
-    "first_seen": 1794741593
-  },
-  {
-    "id": "DfwSDV3knh9",
-    "username": "eyeyechou",
-    "user_url": "https://www.threads.com/@eyeyechou",
-    "text": "3小時",
-    "url": "https://www.threads.com/@eyeyechou/post/DfwSDV3knh9",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794731949,
-    "time_str": "3小時",
-    "theme": "詐騙",
-    "last_seen": 1794742749,
-    "source": "Threads Web",
-    "first_seen": 1794731949
   }
 ];
