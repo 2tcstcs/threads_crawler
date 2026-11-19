@@ -358,50 +358,5 @@ window.crawledData = [
     "last_seen": 1794923920,
     "source": "Threads Web",
     "first_seen": 1794877120
-  },
-  {
-    "id": "Df0CJO_H7cm",
-    "username": "wangnyu",
-    "user_url": "https://www.threads.com/@wangnyu",
-    "text": "19小時",
-    "url": "https://www.threads.com/@wangnyu/post/Df0CJO_H7cm",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794855520,
-    "time_str": "19小時",
-    "theme": "銀行",
-    "last_seen": 1794923920,
-    "source": "Threads Web",
-    "first_seen": 1794855520
-  },
-  {
-    "id": "DfzRsdjmdLD",
-    "username": "violetvioletlu",
-    "user_url": "https://www.threads.com/@violetvioletlu",
-    "text": "蝦皮購物",
-    "url": "https://www.threads.com/@violetvioletlu/post/DfzRsdjmdLD",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794829441,
-    "time_str": "31分鐘",
-    "theme": "詐騙",
-    "last_seen": 1794831301,
-    "source": "Threads Web",
-    "first_seen": 1794829441
-  },
-  {
-    "id": "DfzM8LGmi8l",
-    "username": "lfchrist2010",
-    "user_url": "https://www.threads.com/@lfchrist2010",
-    "text": "高雄冠軍",
-    "url": "https://www.threads.com/@lfchrist2010/post/DfzM8LGmi8l",
-    "likes": 0,
-    "replies": 0,
-    "time": 1794827701,
-    "time_str": "1小時",
-    "theme": "詐騙",
-    "last_seen": 1794831301,
-    "source": "Threads Web",
-    "first_seen": 1794827701
   }
 ];
