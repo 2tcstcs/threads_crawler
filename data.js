@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "Df_9eE1AS3J",
+    "username": "yue_ting_chen",
+    "user_url": "https://www.threads.com/@yue_ting_chen",
+    "text": "5小時",
+    "url": "https://www.threads.com/@yue_ting_chen/post/Df_9eE1AS3J",
+    "likes": 0,
+    "replies": 0,
+    "time": 1795258008,
+    "time_str": "5小時",
+    "theme": "詐騙",
+    "last_seen": 1795276008,
+    "source": "Threads Web",
+    "first_seen": 1795258008
+  },
+  {
+    "id": "Df_7jValAJL",
+    "username": "ilove9up08",
+    "user_url": "https://www.threads.com/@ilove9up08",
+    "text": "King Gnu",
+    "url": "https://www.threads.com/@ilove9up08/post/Df_7jValAJL",
+    "likes": 0,
+    "replies": 0,
+    "time": 1795254408,
+    "time_str": "6小時",
+    "theme": "詐騙",
+    "last_seen": 1795276008,
+    "source": "Threads Web",
+    "first_seen": 1795254408
+  },
+  {
     "id": "Df5nFI6Ehdz",
     "username": "flora_vvv",
     "user_url": "https://www.threads.com/@flora_vvv",
