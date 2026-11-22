@@ -43,20 +43,5 @@ window.crawledData = [
     "last_seen": 1795276008,
     "source": "Threads Web",
     "first_seen": 1795254408
-  },
-  {
-    "id": "Df5nFI6Ehdz",
-    "username": "flora_vvv",
-    "user_url": "https://www.threads.com/@flora_vvv",
-    "text": "建議大家先刪除紅果、黃果、皮克敏app\n以及關閉網銀刷卡/轉帳功能\n還有哪些可疑大家可以討論看看\n目前沒有直接證據\n但研究有可能是這些app中的木馬程式\n造成銀行盜轉盜刷事件",
-    "url": "https://www.threads.com/@flora_vvv/post/Df5nFI6Ehdz",
-    "likes": 0,
-    "replies": 0,
-    "time": 1795043889,
-    "time_str": "3小時",
-    "theme": "詐騙",
-    "last_seen": 1795054689,
-    "source": "Threads Web",
-    "first_seen": 1795043889
   }
 ];
