@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DgENJyMHabz",
+    "username": "caiyi0211",
+    "user_url": "https://www.threads.com/@caiyi0211",
+    "text": "9月購入 到現在 只開機過一次",
+    "url": "https://www.threads.com/@caiyi0211/post/DgENJyMHabz",
+    "likes": 0,
+    "replies": 0,
+    "time": 1795400876,
+    "time_str": "1小時",
+    "theme": "詐騙",
+    "last_seen": 1795404476,
+    "source": "Threads Web",
+    "first_seen": 1795400876
+  },
+  {
+    "id": "DgEGhnVkp6V",
+    "username": "linilingo",
+    "user_url": "https://www.threads.com/@linilingo",
+    "text": "原本只是單純地想分享一份小小的心意，將奧地利的聖誕郵票貼在寄給家人與朋友的信件裡，多一點聖誕節的溫暖與浪漫。",
+    "url": "https://www.threads.com/@linilingo/post/DgEGhnVkp6V",
+    "likes": 0,
+    "replies": 0,
+    "time": 1795397276,
+    "time_str": "2小時",
+    "theme": "詐騙",
+    "last_seen": 1795404476,
+    "source": "Threads Web",
+    "first_seen": 1795397276
+  },
+  {
     "id": "DgDODnXASOP",
     "username": "sn_cix",
     "user_url": "https://www.threads.com/@sn_cix",
