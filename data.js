@@ -1,5 +1,35 @@
 window.crawledData = [
   {
+    "id": "DgPCM7Knz-g",
+    "username": "hsuan_hsuan0916",
+    "user_url": "https://www.threads.com/@hsuan_hsuan0916",
+    "text": "黑木太太",
+    "url": "https://www.threads.com/@hsuan_hsuan0916/post/DgPCM7Knz-g",
+    "likes": 0,
+    "replies": 0,
+    "time": 1795763783,
+    "time_str": "2小時",
+    "theme": "詐騙",
+    "last_seen": 1795770983,
+    "source": "Threads Web",
+    "first_seen": 1795763783
+  },
+  {
+    "id": "DgO_7g1mKpa",
+    "username": "hushtn2024",
+    "user_url": "https://www.threads.com/@hushtn2024",
+    "text": "🔺每人限領取ㄧ個和ㄧ次\n🔺只有來店領取（如有別的就是詐騙）\n🔺1128出來投ㄧ定贏🎉🎉🎉\n🔺公投一定要領並投不同意",
+    "url": "https://www.threads.com/@hushtn2024/post/DgO_7g1mKpa",
+    "likes": 0,
+    "replies": 0,
+    "time": 1795760183,
+    "time_str": "3小時",
+    "theme": "詐騙",
+    "last_seen": 1795770983,
+    "source": "Threads Web",
+    "first_seen": 1795760183
+  },
+  {
     "id": "DgNs7n7gdQ0",
     "username": "haveaniceday_free",
     "user_url": "https://www.threads.com/@haveaniceday_free",
@@ -103,50 +133,5 @@ window.crawledData = [
     "last_seen": 1795619352,
     "source": "Threads Web",
     "first_seen": 1795594152
-  },
-  {
-    "id": "DgHgV13gdl3",
-    "username": "aaro7411321",
-    "user_url": "https://www.threads.com/@aaro7411321",
-    "text": "3小時",
-    "url": "https://www.threads.com/@aaro7411321/post/DgHgV13gdl3",
-    "likes": 0,
-    "replies": 0,
-    "time": 1795510101,
-    "time_str": "3小時",
-    "theme": "詐騙",
-    "last_seen": 1795520901,
-    "source": "Threads Web",
-    "first_seen": 1795510101
-  },
-  {
-    "id": "DgHQmkpkiQ9",
-    "username": "viv.jeh",
-    "user_url": "https://www.threads.com/@viv.jeh",
-    "text": "One Degree",
-    "url": "https://www.threads.com/@viv.jeh/post/DgHQmkpkiQ9",
-    "likes": 0,
-    "replies": 0,
-    "time": 1795502901,
-    "time_str": "5小時",
-    "theme": "詐騙",
-    "last_seen": 1795520901,
-    "source": "Threads Web",
-    "first_seen": 1795502901
-  },
-  {
-    "id": "DgHNxmZEseF",
-    "username": "hangmade_hk",
-    "user_url": "https://www.threads.com/@hangmade_hk",
-    "text": "6小時",
-    "url": "https://www.threads.com/@hangmade_hk/post/DgHNxmZEseF",
-    "likes": 0,
-    "replies": 0,
-    "time": 1795499301,
-    "time_str": "6小時",
-    "theme": "詐騙",
-    "last_seen": 1795520901,
-    "source": "Threads Web",
-    "first_seen": 1795499301
   }
 ];
